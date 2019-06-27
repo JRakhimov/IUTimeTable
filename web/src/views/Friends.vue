@@ -154,12 +154,12 @@ export default {
     }
   },
 
-  mounted() {
+  async mounted() {
     const { studentID } = this.$store.state.profile;
     const { friends } = this.$store.state;
 
     if (studentID && !friends) {
-      this.$store.dispatch("fetchFriends", studentID);
+      await this.$store.dispatch("fetchFriends", studentID);
     }
 
     if (!friends) {

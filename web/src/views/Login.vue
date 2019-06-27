@@ -16,11 +16,11 @@
                 v-model="formData.studentID"
                 :rules="studentIDRules"
                 @focus="resetError()"
-                :disabled="loading"
+                :disabled="isOffline || loading"
                 label="StudentID"
                 name="StudentID"
                 :counter="max"
-                type="number"
+                type="text"
                 clearable
                 required
               ></v-text-field>
@@ -34,7 +34,7 @@
                 v-model="formData.password"
                 :rules="passwordRules"
                 @focus="resetError()"
-                :disabled="loading"
+                :disabled="isOffline || loading"
                 prepend-icon="lock"
                 label="Password"
                 name="Password"
@@ -50,8 +50,8 @@
             <v-flex class="text-xs-center" mb-3>
               <v-btn
                 :color="error ? '#E45164' : '#1976d2'"
-                @click.prevent.stop="login()"
-                :disabled="!valid"
+                @click.prevent="login()"
+                :disabled="!valid && isOffline"
                 :loading="loading"
                 type="submit"
                 large
@@ -67,9 +67,11 @@
 
 <script>
 import axios from "axios";
+import { VueOfflineMixin } from "vue-offline";
 
 export default {
   name: "Login",
+  mixins: [VueOfflineMixin],
 
   data() {
     return {

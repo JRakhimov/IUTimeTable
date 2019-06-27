@@ -89,13 +89,13 @@ export default {
   },
 
   methods: {
-    logOut() {
+    async logOut() {
       localStorage.removeItem("jwt");
       this.$router.replace({ name: "login" });
 
-      this.$store.commit("clearProfile");
-      this.$store.commit("clearFriends");
-      this.$store.commit("clearGroupmates");
+      await this.$store.commit("clearProfile");
+      await this.$store.commit("clearFriends");
+      await this.$store.commit("clearGroupmates");
     }
   }
 };
