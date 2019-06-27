@@ -1,0 +1,11 @@
+{
+  "name": "timetableparser",
+  "version": "1.0.0",
+  "description": "IUT Edupage timetable parser",
+  "main": "index.js",
+  "author": "Javokhir Rakhimov <rakhimov.5556@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "svg-parser": "^1.0.5"
+  }
+}
