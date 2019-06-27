@@ -7,24 +7,36 @@
     grow
     dark
   >
-    <v-tab v-for="(tab, index) in tabs" :key="index" ripple>{{ tab.name }}</v-tab>
+    <v-tab v-for="(tab, index) in tabs" :key="index" ripple>{{
+      tab.name
+    }}</v-tab>
 
     <v-tab-item v-for="(tab, index) in tabs" :key="index">
       <v-container style="height: 100vh">
         <v-layout justify-center>
-          <v-progress-circular v-if="!loaded" :color="color" :size="60" :width="5" indeterminate></v-progress-circular>
+          <v-progress-circular
+            v-if="!loaded"
+            :color="color"
+            :size="60"
+            :width="5"
+            indeterminate
+          ></v-progress-circular>
         </v-layout>
 
         <div v-if="tab.timetable">
-          <v-layout v-for="(subject, index) in tab.timetable" :key="index" justify-center>
+          <v-layout
+            v-for="(subject, index) in tab.timetable"
+            :key="index"
+            justify-center
+          >
             <v-flex md6>
-              <Subject :subjectInfo="subject"/>
+              <Subject :subjectInfo="subject" />
             </v-flex>
           </v-layout>
         </div>
 
         <v-layout class="no-timetable mt-5" v-else column align-center>
-          <img src="../assets/sticker.webp" alt>
+          <img src="../assets/sticker.webp" alt />
 
           <h3 class="mt-2">You don't have lessons today🎉</h3>
         </v-layout>

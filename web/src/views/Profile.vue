@@ -19,9 +19,7 @@
           >
             <v-avatar color="white mb-2" size="70">
               <span class="headline" :style="{ color: color }">
-                {{
-                profile.fullNameLetter
-                }}
+                {{ profile.fullNameLetter }}
               </span>
             </v-avatar>
 
@@ -69,7 +67,9 @@
             <!-- <v-divider></v-divider> -->
 
             <v-layout justify-end align-end>
-              <v-btn v-if="isOnline" :color="color" @click="logOut()" dark>LOGOUT</v-btn>
+              <v-btn v-if="isOnline" :color="color" @click="logOut()" dark
+                >LOGOUT</v-btn
+              >
             </v-layout>
           </v-layout>
         </v-card>

@@ -39,22 +39,35 @@
               :loading="loading"
               :disabled="!valid"
               flat
-            >Add</v-btn>
+              >Add</v-btn
+            >
           </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
 
     <v-layout justify-center>
-      <v-progress-circular v-if="!friends" :color="color" :size="60" :width="5" indeterminate></v-progress-circular>
+      <v-progress-circular
+        v-if="!friends"
+        :color="color"
+        :size="60"
+        :width="5"
+        indeterminate
+      ></v-progress-circular>
 
       <v-flex v-if="friends" md6>
         <v-card class="pr-3">
           <v-list two-line>
             <template v-for="(friend, index) in friendsList">
-              <v-subheader v-if="friend.header" :key="friend.header">{{ friend.header }}</v-subheader>
+              <v-subheader v-if="friend.header" :key="friend.header">{{
+                friend.header
+              }}</v-subheader>
 
-              <v-divider v-else-if="friend.divider" :key="index" :inset="friend.inset"></v-divider>
+              <v-divider
+                v-else-if="friend.divider"
+                :key="index"
+                :inset="friend.inset"
+              ></v-divider>
 
               <v-list-tile
                 v-else
@@ -64,18 +77,29 @@
               >
                 <v-list-tile-avatar>
                   <v-avatar :color="friend.color" size="40">
-                    <span class="white--text headline">{{ friend.oneNameLetter }}</span>
+                    <span class="white--text headline">{{
+                      friend.oneNameLetter
+                    }}</span>
                   </v-avatar>
                 </v-list-tile-avatar>
 
                 <v-list-tile-content>
-                  <v-list-tile-title v-html="friend.fullName"></v-list-tile-title>
-                  <v-list-tile-sub-title v-html="`${friend.studentID} • ${friend.groupName}`"></v-list-tile-sub-title>
+                  <v-list-tile-title
+                    v-html="friend.fullName"
+                  ></v-list-tile-title>
+                  <v-list-tile-sub-title
+                    v-html="`${friend.studentID} • ${friend.groupName}`"
+                  ></v-list-tile-sub-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
                   <v-fab-transition>
-                    <v-btn v-if="isOnline" @click.stop="removeFriend(friend.studentID)" icon ripple>
+                    <v-btn
+                      v-if="isOnline"
+                      @click.stop="removeFriend(friend.studentID)"
+                      icon
+                      ripple
+                    >
                       <v-icon color="#E45164">delete</v-icon>
                     </v-btn>
                   </v-fab-transition>
