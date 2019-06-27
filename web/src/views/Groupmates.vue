@@ -1,44 +1,34 @@
 <template>
   <v-container>
     <v-layout justify-center>
-      <v-progress-circular
-        v-if="!groupmates.length"
-        :color="color"
-        :size="60"
-        :width="5"
-        indeterminate
-      ></v-progress-circular>
+      <GroupmatesSkeleton v-if="!groupmates"/>
 
-      <v-flex v-if="groupmates.length" md6>
+      <v-flex v-if="groupmates" md6>
         <v-card class="pr-3">
           <v-list two-line>
             <template v-for="(groupmate, index) in groupmatesList">
-              <v-subheader v-if="groupmate.header" :key="groupmate.header">{{
+              <v-subheader v-if="groupmate.header" :key="groupmate.header">
+                {{
                 groupmate.header
-              }}</v-subheader>
+                }}
+              </v-subheader>
 
-              <v-divider
-                v-else-if="groupmate.divider"
-                :key="index"
-                :inset="groupmate.inset"
-              ></v-divider>
+              <v-divider v-else-if="groupmate.divider" :key="index" :inset="groupmate.inset"></v-divider>
 
               <v-list-tile v-else :key="groupmate.studentID" avatar>
                 <v-list-tile-avatar>
                   <v-avatar :color="groupmate.color" size="40">
-                    <span class="white--text headline">{{
+                    <span class="white--text headline">
+                      {{
                       groupmate.oneNameLetter
-                    }}</span>
+                      }}
+                    </span>
                   </v-avatar>
                 </v-list-tile-avatar>
 
                 <v-list-tile-content>
-                  <v-list-tile-title
-                    v-html="groupmate.fullName"
-                  ></v-list-tile-title>
-                  <v-list-tile-sub-title
-                    v-html="groupmate.studentID"
-                  ></v-list-tile-sub-title>
+                  <v-list-tile-title v-html="groupmate.fullName"></v-list-tile-title>
+                  <v-list-tile-sub-title v-html="groupmate.studentID"></v-list-tile-sub-title>
                 </v-list-tile-content>
               </v-list-tile>
             </template>
@@ -51,23 +41,20 @@
 
 <script>
 import { utils } from "../mixins/utils";
+import GroupmatesSkeleton from "../components/GroupmatesSkeleton";
 
 export default {
   name: "Groupmates",
   mixins: [utils],
+  components: { GroupmatesSkeleton },
+
+  data() {
+    return {
+      groupmates: null
+    };
+  },
 
   computed: {
-    groupmates() {
-      const { groupName } = this.$store.state.profile;
-      const { groupmates } = this.$store.state;
-
-      if (groupName && !groupmates.length) {
-        this.$store.dispatch("fetchGroupmates", groupName);
-      }
-
-      return this.$store.state.groupmates;
-    },
-
     groupmatesList() {
       const tmpGroupmates = [{ header: this.$store.state.profile.groupName }];
 
@@ -81,6 +68,22 @@ export default {
 
       return tmpGroupmates;
     }
+  },
+
+  async mounted() {
+    const { groupName } = this.$store.state.profile;
+    const { groupmates } = this.$store.state;
+
+    if (groupName && !groupmates) {
+      await this.$store.dispatch("fetchGroupmates", groupName);
+    }
+
+    if (!groupmates) {
+      setTimeout(() => (this.groupmates = this.$store.state.groupmates), 2000);
+      return;
+    }
+
+    this.groupmates = this.$store.state.groupmates;
   }
 };
 </script>

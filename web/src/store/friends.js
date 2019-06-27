@@ -9,7 +9,9 @@ export const mutations = {
   setFriends: (state, friends) =>
     (state.friends = friends.map(friend =>
       utils.methods.updateStudentData(friend)
-    ))
+    )),
+
+  clearFriends: state => (state.friends = null)
 };
 
 export const actions = {

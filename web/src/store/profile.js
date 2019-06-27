@@ -37,12 +37,8 @@ export const actions = {
     const URL = `${HOST_URL}/students/${studentID}`;
     const jwt = localStorage.getItem("jwt");
 
-    console.log("RJ: URL", URL);
-
     try {
       const { data } = await axios.get(URL, { headers: { "X-Auth": jwt } });
-
-      console.log("RJ: data", data);
 
       if (data.status) {
         ctx.commit("setProfile", data.student);

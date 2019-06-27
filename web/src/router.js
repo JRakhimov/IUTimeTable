@@ -24,7 +24,7 @@ export const router = new Router({
       component: Login,
       meta: {
         layout: "login",
-        routeColor: "#1d233"
+        routeColor: "#1D2331"
       }
     },
     {
@@ -77,7 +77,7 @@ router.beforeEach(async (to, from, next) => {
   const jwtToken = localStorage.getItem("jwt");
 
   const [themeColor] = document.getElementsByName("theme-color");
-  themeColor.content = to.meta.routeColor || "#1d233";
+  themeColor.content = to.meta.routeColor || "#1D2331";
 
   if (!authRequired && !jwtToken) {
     // Page requires authorization and user doesnt have JWT token

@@ -2,14 +2,16 @@ import axios from "axios";
 import { utils } from "../mixins/utils";
 
 export const state = {
-  groupmates: []
+  groupmates: null
 };
 
 export const mutations = {
   setGroupmates: (state, groupmates) =>
     (state.groupmates = groupmates.map(groupmate =>
       utils.methods.updateStudentData(groupmate)
-    ))
+    )),
+
+  clearGroupmates: state => (state.groupmates = null)
 };
 
 export const actions = {

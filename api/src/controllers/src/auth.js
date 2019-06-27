@@ -29,14 +29,21 @@ export const eclass = async (req, res) => {
     let studentDataFromDB = await firebase
       .database()
       .ref(ref)
-      .once("value");
+      .once("value")
+      .then(x => x.val());
 
-    studentDataFromDB = studentDataFromDB.val();
+    const studentTimetable = await firebase
+      .database()
+      .ref(`timetables/${studentDataFromDB.groupName}`)
+      .once("value")
+      .then(x => x.val());
 
     if (studentDataFromDB) {
       const token = jwt.sign({ studentID }, process.env.STUDENT_SALT);
 
-      return res.status(200).json({ status: true, jwt: token, student: studentDataFromDB });
+      return res
+        .status(200)
+        .json({ status: true, jwt: token, student: { ...studentDataFromDB, timetable: studentTimetable } });
     }
 
     return res

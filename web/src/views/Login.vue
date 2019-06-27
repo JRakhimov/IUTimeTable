@@ -16,10 +16,11 @@
                 v-model="formData.studentID"
                 :rules="studentIDRules"
                 @focus="resetError()"
+                :disabled="loading"
                 label="StudentID"
                 name="StudentID"
-                type="number"
                 :counter="max"
+                type="number"
                 clearable
                 required
               ></v-text-field>
@@ -33,6 +34,7 @@
                 v-model="formData.password"
                 :rules="passwordRules"
                 @focus="resetError()"
+                :disabled="loading"
                 prepend-icon="lock"
                 label="Password"
                 name="Password"
@@ -54,8 +56,7 @@
                 type="submit"
                 large
                 flat
-                >Login</v-btn
-              >
+              >Login</v-btn>
             </v-flex>
           </v-layout>
         </v-form>

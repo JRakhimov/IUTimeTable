@@ -187,7 +187,6 @@
       }
     ],
     "spaced-comment": [2, "always"],
-    "arrow-parens": [2, "always"],
     "arrow-spacing": 2,
     "constructor-super": 2,
     "generator-star-spacing": [
