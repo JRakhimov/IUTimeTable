@@ -2,7 +2,7 @@ import axios from "axios";
 import { utils } from "../mixins/utils";
 
 export const state = {
-  friends: []
+  friends: null
 };
 
 export const mutations = {

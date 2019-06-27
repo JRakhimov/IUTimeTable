@@ -2,15 +2,15 @@
   <v-container>
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
-        <v-card-title>
-          <span class="headline">Add friend</span>
-        </v-card-title>
+        <v-form ref="form" v-model="valid">
+          <v-card-title>
+            <span class="headline">Add friend</span>
+          </v-card-title>
 
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex>
-                <v-form ref="form" v-model="valid">
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex>
                   <v-text-field
                     prepend-icon="account_circle"
                     label="Friend's StudentID"
@@ -24,33 +24,35 @@
                     clearable
                     required
                   ></v-text-field>
-                </v-form>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn :color="color" @click="closeDialog" flat>Close</v-btn>
-          <v-btn :color="color" @click="addFriend" :loading="loading" :disabled="!valid" flat>Add</v-btn>
-        </v-card-actions>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn :color="color" @click="closeDialog" flat>Close</v-btn>
+            <v-btn
+              type="submit"
+              :color="color"
+              @click.prevent="addFriend"
+              :loading="loading"
+              :disabled="!valid"
+              flat
+            >Add</v-btn>
+          </v-card-actions>
+        </v-form>
       </v-card>
     </v-dialog>
 
     <v-layout justify-center>
-      <v-progress-circular
-        v-if="!friends.length"
-        :color="color"
-        :size="60"
-        :width="5"
-        indeterminate
-      ></v-progress-circular>
+      <v-progress-circular v-if="!friends" :color="color" :size="60" :width="5" indeterminate></v-progress-circular>
 
-      <v-flex v-if="friends.length" md6>
+      <v-flex v-if="friends" md6>
         <v-card class="pr-3">
           <v-list two-line>
             <template v-for="(friend, index) in friendsList">
-              <v-subheader v-if="friend.header" :key="friend.header">{{ friend.header}}</v-subheader>
+              <v-subheader v-if="friend.header" :key="friend.header">{{ friend.header }}</v-subheader>
 
               <v-divider v-else-if="friend.divider" :key="index" :inset="friend.inset"></v-divider>
 
@@ -89,7 +91,7 @@
       <v-btn
         :color="color"
         @click="openDialog"
-        v-show="!dialog && isOnline"
+        v-show="!dialog && isOnline && friends"
         class="add-friend"
         dark
         fab
@@ -127,7 +129,7 @@ export default {
       const { studentID } = this.$store.state.profile;
       const { friends } = this.$store.state;
 
-      if (studentID && !friends.length) {
+      if (studentID && !friends) {
         this.$store.dispatch("fetchFriends", studentID);
       }
 
@@ -136,7 +138,7 @@ export default {
 
     friendsList() {
       const header = `You have ${this.friends.length} ${
-        this.friends.length > 1 ? "friends" : "friend"
+        this.friends.length === 1 ? "friend" : "friends"
       }`;
       const tmpFriends = [{ header }];
 

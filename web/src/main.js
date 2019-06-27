@@ -1,7 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
-import { router } from "./router";
 import store from "./store";
+import { router } from "./router";
 import "./registerServiceWorker";
 
 Vue.prototype.HOST_URL = process.env.VUE_APP_HOST_URL;

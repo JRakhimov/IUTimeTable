@@ -79,6 +79,12 @@ export default {
       if (this.$route.name === "timetable") {
         this.loaded = true;
 
+        const { studentID, timetable } = this.$store.state.profile;
+
+        if (!timetable || Object.keys(timetable).length === 0) {
+          this.$store.dispatch("fetchProfile", studentID);
+        }
+
         return this.$store.state.profile.timetable;
       }
 

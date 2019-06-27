@@ -19,12 +19,9 @@ export const eclass = async (req, res) => {
     { headers: { "X-Auth": process.env.ECLASS_AUTH_TOKEN } }
   );
 
-  const { studentData } = response.data;
+  const { status, studentData } = response.data;
 
-  // eslint-disable-next-line no-shadow
-  const { studentID: userID, fullName } = studentData;
-
-  if (userID && fullName) {
+  if (status && studentData) {
     // eslint-disable-next-line eqeqeq
     const isSOL = studentID[5] == 1;
     const ref = `students/${isSOL ? "SOL" : "SOCIE"}/${studentID}`;
