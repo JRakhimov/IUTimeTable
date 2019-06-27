@@ -51,7 +51,7 @@
               <v-btn
                 :color="error ? '#E45164' : '#1976d2'"
                 @click.prevent="login()"
-                :disabled="!valid && isOffline"
+                :disabled="!valid || isOffline"
                 :loading="loading"
                 type="submit"
                 large
