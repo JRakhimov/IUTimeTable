@@ -78,7 +78,11 @@ router.beforeEach(async (to, from, next) => {
   const jwtToken = localStorage.getItem("jwt");
 
   const [themeColor] = document.getElementsByName("theme-color");
-  themeColor.content = shadeColor(to.meta.routeColor || "#1D2331", -15);
+  setTimeout(
+    () =>
+      (themeColor.content = shadeColor(to.meta.routeColor || "#1D2331", -15)),
+    100
+  );
 
   if (!authRequired && !jwtToken) {
     // Page requires authorization and user doesnt have JWT token
