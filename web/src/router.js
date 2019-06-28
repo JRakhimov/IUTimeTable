@@ -9,6 +9,7 @@ import Timetable from "./views/Timetable.vue";
 import Groupmates from "./views/Groupmates.vue";
 
 import store from "./store";
+import { shadeColor } from "./mixins/getDarkenColor";
 
 Vue.use(Router);
 
@@ -77,7 +78,7 @@ router.beforeEach(async (to, from, next) => {
   const jwtToken = localStorage.getItem("jwt");
 
   const [themeColor] = document.getElementsByName("theme-color");
-  themeColor.content = to.meta.routeColor || "#1D2331";
+  themeColor.content = shadeColor(to.meta.routeColor || "#1D2331", -15);
 
   if (!authRequired && !jwtToken) {
     // Page requires authorization and user doesnt have JWT token
