@@ -13,20 +13,12 @@
 
       <v-layout>
         <transition name="fade" mode="out-in">
-          <router-view />
+          <router-view/>
         </transition>
       </v-layout>
 
       <v-layout>
-        <v-bottom-nav
-          :active="bottomNav"
-          :color="color"
-          :value="true"
-          :app="true"
-          fixed
-          shift
-          dark
-        >
+        <v-bottom-nav :active="bottomNav" :color="color" :value="true" :app="true" fixed shift dark>
           <v-btn value="timetable" @click="changeRoute('timetable')" dark>
             <span>Timetable</span>
             <v-icon>chrome_reader_mode</v-icon>
@@ -48,16 +40,29 @@
           </v-btn>
         </v-bottom-nav>
       </v-layout>
+
+      <v-snackbar v-model="snackbar" :top="true" :timeout="4000">
+        {{ snackbarText }}
+        <v-btn :color="color" flat @click="snackbar = false">Close</v-btn>
+      </v-snackbar>
     </v-container>
   </v-app>
 </template>
 
 <script>
 import { utils } from "../mixins/utils";
+import { VueOfflineMixin } from "vue-offline";
 
 export default {
   name: "Default",
-  mixins: [utils],
+  mixins: [utils, VueOfflineMixin],
+
+  data() {
+    return {
+      snackbar: false,
+      snackbarText: null
+    };
+  },
 
   computed: {
     bottomNav() {
@@ -70,6 +75,23 @@ export default {
   methods: {
     changeRoute(to) {
       this.$router.replace({ name: to });
+    }
+  },
+
+  mounted() {
+    this.$on("offline", () => {
+      this.snackbarText = "You are offline ☹️";
+      this.snackbar = true;
+    });
+
+    this.$on("online", () => {
+      this.snackbarText = "You are online 😎️";
+      this.snackbar = true;
+    });
+
+    if (this.isOffline) {
+      this.snackbarText = "You are offline ☹️";
+      this.snackbar = true;
     }
   }
 };

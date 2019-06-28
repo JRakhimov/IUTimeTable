@@ -49,8 +49,8 @@
       <FriendsSkeleton v-if="!friends"/>
 
       <v-flex v-if="friends" md6>
-        <v-card class="pr-3">
-          <v-list two-line>
+        <v-card>
+          <v-list class="pr-3" two-line>
             <template v-for="(friend, index) in friendsList">
               <v-subheader v-if="friend.header" :key="friend.header">
                 {{
@@ -91,6 +91,13 @@
               </v-list-tile>
             </template>
           </v-list>
+
+          <v-progress-linear
+            :indeterminate="true"
+            :active="deletePending"
+            :color="color"
+            height="5"
+          ></v-progress-linear>
         </v-card>
       </v-flex>
     </v-layout>
@@ -123,6 +130,7 @@ export default {
 
   data() {
     return {
+      deletePending: false,
       newFriendID: null,
       loading: false,
       friends: null,
@@ -205,6 +213,7 @@ export default {
         }
 
         setTimeout(() => {
+          this.friends = this.$store.state.friends;
           this.loading = false;
           this.closeDialog();
         }, 500);
@@ -214,6 +223,8 @@ export default {
     },
 
     async removeFriend(friendID) {
+      this.deletePending = true;
+
       const { studentID } = this.$store.state.profile;
 
       for (const friend of this.friendsList) {
@@ -235,6 +246,9 @@ export default {
           }
         }
       }
+
+      this.friends = this.$store.state.friends;
+      this.deletePending = false;
     },
 
     friendsTimetable(friendID) {
