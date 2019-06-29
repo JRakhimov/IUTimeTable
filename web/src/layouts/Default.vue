@@ -98,6 +98,10 @@ export default {
 </script>
 
 <style lang="scss">
+.scroll-container {
+  overflow-y: hidden !important;
+}
+
 .container.fluid {
   padding: 0;
 }
