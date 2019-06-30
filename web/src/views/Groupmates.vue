@@ -1,11 +1,16 @@
 <template>
-  <v-container>
-    <PullTo :top-load-method="refresh" :top-config="pullToConfig">
+  <pull-to
+    :top-load-method="refresh"
+    :top-config="pullToConfig"
+    :wrapper-height="$refs.groupmatesCard ? $refs.groupmatesCard.offsetHeight + 'px' : '1140px'"
+    style="width: 100%;"
+  >
+    <v-container>
       <v-layout justify-center>
-        <GroupmatesSkeleton v-if="!groupmates"/>
+        <GroupmatesSkeleton v-if="!groupmates || updating"/>
 
-        <v-flex v-if="groupmates" md6>
-          <v-card class="pr-3">
+        <v-flex v-if="groupmates && !updating" md6>
+          <v-card class="pr-3" ref="groupmatesCard">
             <v-list two-line>
               <template v-for="(groupmate, index) in groupmatesList">
                 <v-subheader v-if="groupmate.header" :key="groupmate.header">
@@ -37,8 +42,8 @@
           </v-card>
         </v-flex>
       </v-layout>
-    </PullTo>
-  </v-container>
+    </v-container>
+  </pull-to>
 </template>
 
 <script>
@@ -54,16 +59,32 @@ export default {
   data() {
     return {
       groupmates: null,
+      updating: false,
       pullToConfig: {
-        pullText: "Update list of groupmates", // The text is displayed when you pull down
-        triggerText: "You can let go", // The text that appears when the trigger distance is pulled down
-        loadingText: "Updating...", // The text in the load
-        doneText: "Updated", // Load the finished text
+        pullText: "Update list of groupmates 👨‍👩‍👧‍👦", // The text is displayed when you pull down
+        triggerText: "You can let go 🚀", // The text that appears when the trigger distance is pulled down
+        loadingText: "Updating", // The text in the load
+        doneText: "Updated 🎉", // Load the finished text
         failText: "Error", // Load failed text
         loadedStayTime: 500, // Time to stay after loading ms
-        stayDistance: 50, // Trigger the distance after the refresh
+        stayDistance: 60, // Trigger the distance after the refresh
         triggerDistance: 70 // Pull down the trigger to trigger the distance
-      }
+      },
+      clock: "",
+      clocks: [
+        "🕐",
+        "🕑",
+        "🕒",
+        "🕓",
+        "🕔",
+        "🕕",
+        "🕖",
+        "🕗",
+        "🕘",
+        "🕙",
+        "🕚",
+        "🕛"
+      ]
     };
   },
 
@@ -84,11 +105,31 @@ export default {
   },
 
   methods: {
-    refresh(loaded) {
-      console.log("Loading");
+    clockPreloader() {
+      if (!this.updating) {
+        return;
+      }
+
+      this.clock = this.clocks[
+        Math.floor((Date.now() / 100) % this.clocks.length)
+      ];
+
+      setTimeout(this.clockPreloader, 50);
+
+      this.pullToConfig.loadingText = "Updating " + this.clock;
+    },
+
+    async refresh(loaded) {
+      const { groupName } = this.$store.state.profile;
+
+      this.updating = true;
+      this.clockPreloader();
+
+      await this.$store.dispatch("fetchGroupmates", groupName);
 
       setTimeout(() => {
-        console.log("Loaded");
+        this.groupmates = this.$store.state.groupmates;
+        this.updating = false;
         loaded("done");
       }, 2000);
     }
