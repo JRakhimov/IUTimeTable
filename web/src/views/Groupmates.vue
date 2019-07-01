@@ -1,10 +1,5 @@
 <template>
-  <pull-to
-    :top-load-method="refresh"
-    :top-config="pullToConfig"
-    :wrapper-height="$refs.groupmatesCard ? $refs.groupmatesCard.offsetHeight + 'px' : '1140px'"
-    style="width: 100%;"
-  >
+  <pull-to :top-load-method="refresh" :top-config="pullToConfig" style="width: 100%;">
     <v-container>
       <v-layout justify-center>
         <GroupmatesSkeleton v-if="!groupmates || updating"/>
@@ -68,7 +63,7 @@ export default {
         failText: "Error", // Load failed text
         loadedStayTime: 500, // Time to stay after loading ms
         stayDistance: 60, // Trigger the distance after the refresh
-        triggerDistance: 70 // Pull down the trigger to trigger the distance
+        triggerDistance: 75 // Pull down the trigger to trigger the distance
       },
       clock: "",
       clocks: [

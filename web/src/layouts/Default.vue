@@ -99,7 +99,13 @@ export default {
 
 <style lang="scss">
 .scroll-container {
-  overflow-y: hidden !important;
+  // overflow-y: hidden !important;
+}
+
+.vue-pull-to-wrapper > .action-block > .default-text {
+  color: rgba(0, 0, 0, 0.54);
+  margin-bottom: 0;
+  font-weight: 500;
 }
 
 .container.fluid {

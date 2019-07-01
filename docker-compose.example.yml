@@ -1,0 +1,60 @@
+version: '3'
+
+volumes:
+  api_logs:
+  bot_logs:
+
+services:
+  api:
+    build: ./api
+    environment:
+      - PORT=80
+      - IS_NOW=true
+      - ECLASS_AUTH_URL=
+      - ECLASS_AUTH_TOKEN=
+      - STUDENT_SALT=
+      - ADMIN_SALT=
+      - PROJECT_ID=
+      - PRIVATE_KEY_ID=
+      - PRIVATE_KEY=
+      - CLIENT_EMAIL=
+      - CLIENT_ID=
+      - CLIENT_CERT_URL=
+    ports:
+      - 3000:80
+    volumes:
+      - api_logs:/app/logs
+    restart: always
+
+  bot:
+    build: ./bot
+    environment:
+      - API_URL=http://api
+      - BOT_TOKEN=
+      - BOT_USERNAME=
+      - IS_NOW=
+      - PROJECT_ID=
+      - PRIVATE_KEY_ID=
+      - PRIVATE_KEY=
+      - CLIENT_EMAIL=
+      - CLIENT_ID=
+      - CLIENT_CERT_URL=
+    ports:
+      - 3001:3001
+    links:
+      - api
+    depends_on:
+      - api
+    volumes:
+      - bot_logs:/app/logs
+    restart: always
+
+  web:
+    build: ./web
+    ports:
+      - 3002:8080
+    links:
+      - api
+    depends_on:
+      - api
+    restart: always

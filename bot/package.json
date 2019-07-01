@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "babel-node src/index.js",
     "build": "babel src --out-dir dist --source-maps inline",
     "dev": "nodemon --exec babel-node src/index.js"
   },

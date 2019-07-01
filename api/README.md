@@ -1,49 +1,41 @@
-# ConstructorBot
-
-## Installation
+# IUTimeTable API
 
 ### First things first...
 
-You will need to generate a Telegram bot API key and that it's easy, just follow [this](https://core.telegram.org/bots#3-how-do-i-create-a-bot) step-by-step.
-
-### Now the environment part...
-
-Install npm and Node.js on your machine, open a terminal then navigate to the folder where you want your project to be, then run this command:
-
-```bash
-git clone https://github.com/JRakhimov/BotConstructor.git
-```
-
-You should see something like this:
-
-```bash
-Cloning into 'BotConstructor'...
-remote: Counting objects: 17, done.
-remote: Compressing objects: 100% (15/15), done.
-remote: Total 17 (delta 3), reused 12 (delta 2), pack-reused 0
-Unpacking objects: 100% (17/17), done.
-```
+Contact main [developer](https://t.me/Rakhimov_J) to get E-Class authorization url and jwt token for it, without these you cannot run the project properly. Also you need to create Firebase project.
 
 ## Installing
 
-Now it is a good time to create your environment variables file to save the API keys that was granted to you by BotFather . To create the file just run still at the root project folder:
+Now it is a good time to create your environment variables file to keep the E-Class authorization API variables and Firebase Database credentials. To create the file just run still at the root project folder:
 
 ```bash
 touch .env
 ```
 
-Once the file is created, just open it and past the following environment variables with their respective values that you own, just remember that those keys are related to you and must not be shared with anyone else, remember to always have this file in your .gitignore so that way you do not push it accidentally. Your .env file must be something like this:
+Once the file is created, just open it and past the following environment variables with their respective values that you own, just remember that those keys are related to you and must not be shared with anyone else, remember to always have this file in your .gitignore so that way you do not push it accidentally. Your .env file should contain these variables:
 
 ```js
-ENV = 'dev'; // or "prod"
-DEBUG = 'Express,Bot:*'; // what we want to debug
-```
+PORT = '';
+IS_NOW = ''; // (Boolean) is for now.sh
 
-### P.S. Note that all the bot configuration constants are in the config.js file!
+ECLASS_AUTH_URL = '';
+ECLASS_AUTH_TOKEN = '';
+
+STUDENT_SALT = '';
+ADMIN_SALT = '';
+
+// Firebase credentials
+PRIVATE_KEY = '';
+PRIVATE_KEY_ID = '';
+PROJECT_ID = '';
+CLIENT_EMAIL = '';
+CLIENT_ID = '';
+CLIENT_CERT_URL = '';
+```
 
 ## Running
 
-For development, you don't need webhook, just run this in your terminal:
+For development just run this in your terminal:
 
 ```bash
 npm install
@@ -51,7 +43,7 @@ npm install
 npm run dev
 ```
 
-For production, you should specify webhook url in config.js file in `prodConfig` (look for property: `hostURL`) and then:
+For production:
 
 ```bash
 npm install
@@ -59,4 +51,12 @@ npm install
 npm run start
 ```
 
-All of your bot's requests will be logged in your terminal.
+or
+
+```bash
+npm install
+
+npm run build
+```
+
+All logs will be logged in your terminal.
