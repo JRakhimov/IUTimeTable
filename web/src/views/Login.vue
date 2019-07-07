@@ -56,7 +56,8 @@
                 type="submit"
                 large
                 flat
-              >Login</v-btn>
+                >Login</v-btn
+              >
             </v-flex>
           </v-layout>
         </v-form>

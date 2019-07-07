@@ -13,12 +13,20 @@
 
       <v-layout>
         <transition name="fade" mode="out-in">
-          <router-view/>
+          <router-view />
         </transition>
       </v-layout>
 
       <v-layout>
-        <v-bottom-nav :active="bottomNav" :color="color" :value="true" :app="true" fixed shift dark>
+        <v-bottom-nav
+          :active="bottomNav"
+          :color="color"
+          :value="true"
+          :app="true"
+          fixed
+          shift
+          dark
+        >
           <v-btn value="timetable" @click="changeRoute('timetable')" dark>
             <span>Timetable</span>
             <v-icon>chrome_reader_mode</v-icon>

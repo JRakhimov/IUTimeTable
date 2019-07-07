@@ -6,11 +6,19 @@
       :key="index"
       :height="70"
     >
-      <rect v-if="index === 0" x="0" y="0" rx="4" ry="4" width="70" height="8"/>
+      <rect
+        v-if="index === 0"
+        x="0"
+        y="0"
+        rx="4"
+        ry="4"
+        width="70"
+        height="8"
+      />
 
-      <circle cx="30" cy="45" r="25"/>
-      <rect x="70" y="25" rx="4" ry="4" width="120" height="13"/>
-      <rect x="70" y="45" rx="4" ry="4" width="60" height="8"/>
+      <circle cx="30" cy="45" r="25" />
+      <rect x="70" y="25" rx="4" ry="4" width="120" height="13" />
+      <rect x="70" y="45" rx="4" ry="4" width="60" height="8" />
 
       <rect
         v-if="index !== skeletonsAmount - 1"
