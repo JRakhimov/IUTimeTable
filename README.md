@@ -10,6 +10,6 @@ Easy way to run project:
 docker-compose up
 ```
 
-Backend of the project available at http://localhost:3000
-Telegram bot at http://localhost:3001
-Frontend - http://localhost:3002
+- Backend of the project available at http://localhost:3000
+- Telegram bot at http://localhost:3001
+- Frontend - http://localhost:3002
