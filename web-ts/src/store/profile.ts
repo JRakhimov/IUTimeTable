@@ -36,7 +36,7 @@ export default class Groupmates extends VuexModule {
 
   @Action({ commit: "setProfile" })
   async fetchFriends(studentID: string): Promise<Student> {
-    const HOST_URL: string = process.env.VUE_APP_HOST_URL;
+    const HOST_URL = process.env.VUE_APP_HOST_URL;
     const URL = `${HOST_URL}/students/${studentID}`;
     const jwt = localStorage.getItem("jwt");
 

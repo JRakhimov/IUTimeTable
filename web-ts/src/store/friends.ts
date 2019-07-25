@@ -33,7 +33,7 @@ export default class Friends extends VuexModule {
 
   @Action({ commit: "setFriends" })
   async fetchFriends(studentID: string): Promise<Student[]> {
-    const HOST_URL: string = process.env.VUE_APP_HOST_URL;
+    const HOST_URL = process.env.VUE_APP_HOST_URL;
     const URL = `${HOST_URL}/friends/${studentID}`;
     const jwt = localStorage.getItem("jwt");
 

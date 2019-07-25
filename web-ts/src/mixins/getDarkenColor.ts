@@ -3,7 +3,7 @@ import Component from "vue-class-component";
 
 @Component
 export default class GetDarkenColor extends Vue {
-  shadeColor(color: string, percent: number): string {
+  static shadeColor(color: string, percent: number): string {
     let R = parseInt(color.substring(1, 3), 16);
     let G = parseInt(color.substring(3, 5), 16);
     let B = parseInt(color.substring(5, 7), 16);

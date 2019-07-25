@@ -50,23 +50,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Vue } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
 import VueOfflineMixin from "../mixins/vueOffline";
 import UtilsMixin from "../mixins/utils";
 
 @Component
-export default class Default extends Mixins(UtilsMixin, VueOfflineMixin) {
+export default class DefaultLayout extends Mixins(UtilsMixin, VueOfflineMixin) {
   private snackbar: boolean = false;
   private snackbarText: string = "";
 
-  get bottomNav(): string {
+  get bottomNav() {
     return this.$route.name === "friends-timetable"
       ? "friends"
       : this.$route.name;
   }
 
-  changeRoute(to) {
+  changeRoute(to: string) {
     this.$router.replace({ name: to });
   }
 
