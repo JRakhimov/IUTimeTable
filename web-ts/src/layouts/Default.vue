@@ -25,6 +25,7 @@
           fixed
           shift
           dark
+          grow
         >
           <v-btn value="timetable" @click="changeRoute('timetable')" dark>
             <span>Timetable</span>

@@ -1,7 +1,7 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
 import axios from "axios";
 
-import { Student, ExtendedStudent, TimeTable } from "../types";
+import { Student, ExtendedStudent } from "../types";
 import UtilsMixin from "../mixins/utils";
 
 type GroupmatesResponse = {
@@ -9,7 +9,7 @@ type GroupmatesResponse = {
   students: Student[];
 };
 
-@Module
+@Module({ name: "Groupmates" })
 export default class Groupmates extends VuexModule {
   groupmates: ExtendedStudent[] = [];
 

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import Router from "vue-router";
 
 import Login from "@/views/Login.vue";
+import Profile from "@/views/Profile.vue";
 import Timetable from "@/views/Timetable.vue";
 
 import store from "./store";
@@ -31,6 +32,14 @@ export const router = new Router({
       component: Timetable,
       meta: {
         routeColor: "#5A97E5"
+      }
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: Profile,
+      meta: {
+        routeColor: "#E45164"
       }
     }
   ]
