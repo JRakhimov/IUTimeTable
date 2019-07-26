@@ -1,28 +1,24 @@
 <template>
   <v-tabs
-    :color="color"
-    v-model="activeTab"
-    slider-color="#F7C951"
+    :background-color="color"
     class="w-100 shadow-top"
+    slider-color="#F7C951"
+    v-model="activeTab"
     grow
     dark
   >
-    <v-tab v-for="(tab, index) in tabs" :key="index" ripple>
-      {{
-      tab.name
-      }}
-    </v-tab>
+    <v-tab v-for="(tab, index) in tabs" :key="index" ripple>{{ tab.name }}</v-tab>
 
     <v-tab-item v-for="(tab, index) in tabs" :key="index">
-      <v-container style="height: 100vh">
+      <v-container style="height: 82vh">
         <v-layout justify-center>
           <v-progress-circular v-if="!loaded" :color="color" :size="60" :width="5" indeterminate></v-progress-circular>
         </v-layout>
 
         <div v-if="tab.timetable">
-          <v-layout v-for="(subject, index) in tab.timetable" :key="index" justify-center>
+          <v-layout v-for="(lesson, index) in tab.timetable" :key="index" justify-center>
             <v-flex md6>
-              <Subject :subjectInfo="subject" />
+              <LessonView :lessonInfo="lesson" />
             </v-flex>
           </v-layout>
         </div>
@@ -47,6 +43,8 @@ import FriendsModule from "../store/friends";
 import UtilsMixin from "../mixins/utils";
 import store from "../store";
 
+import LessonView from "../components/LessonView.vue";
+
 const Friends = getModule(FriendsModule, store);
 const Profile = getModule(ProfileModule, store);
 
@@ -55,12 +53,9 @@ type Tab = {
   timetable: TimeTable | {};
 };
 
-@Component({ components: {} })
+@Component({ components: { LessonView } })
 export default class Timetable extends Mixins(UtilsMixin) {
-  private activeTab: Tab = {
-    name: "Monday",
-    timetable: {}
-  };
+  private activeTab: number = 0;
   private tabs: Tab[] = [
     {
       name: "Monday",
@@ -90,7 +85,7 @@ export default class Timetable extends Mixins(UtilsMixin) {
 
   get timetable(): Timetable | {} {
     if (this.$route.name === "timetable") {
-      return Profile.getProfile;
+      return Profile.getProfileTimetable;
     }
 
     if (this.$route.name === "friends-timetable") {

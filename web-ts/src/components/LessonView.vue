@@ -1,0 +1,100 @@
+<template>
+  <v-card class="mb-3 subject">
+    <v-layout class="px-3 py-3 mb-4" align-center>
+      <v-flex class="mr-3 times" md3>
+        <div class="start-time">{{ lessonInfo.startTime }}</div>
+
+        <div class="end-time">{{ lessonInfo.endTime }}</div>
+      </v-flex>
+
+      <v-flex class="subject-name">{{ lessonInfo.subjectName }} ({{ lessonInfo.sectionNumber }})</v-flex>
+    </v-layout>
+
+    <v-layout>
+      <div class="subject-room" :style="{ backgroundColor: color }" md4>Room: {{ lessonInfo.room }}</div>
+      <div
+        class="subject-teacher"
+        :style="{ backgroundColor: color }"
+        md4
+      >Teacher: {{ lessonInfo.teacherNameShort }}</div>
+    </v-layout>
+  </v-card>
+</template>
+
+
+<script lang="ts">
+import { Component, Mixins, Prop } from "vue-property-decorator";
+
+import UtilsMixin from "../mixins/utils";
+import { LessonInfo } from "../types";
+
+@Component
+export default class Lesson extends Mixins(UtilsMixin) {
+  @Prop({
+    default: {
+      day: "",
+      room: "",
+      sectionNumber: 0,
+
+      endTime: "",
+      startTime: "",
+
+      subjectName: "",
+      subjectNameShort: "",
+
+      teacherName: "",
+      teacherNameShort: ""
+    }
+  })
+  readonly lessonInfo!: LessonInfo;
+}
+</script>
+
+<style lang="scss">
+.subject {
+  position: relative;
+
+  .times {
+    max-width: 100px;
+
+    .start-time {
+      text-align: center;
+      font-size: 2rem;
+    }
+
+    .end-time {
+      text-align: center;
+      font-size: 1.5rem;
+    }
+  }
+
+  .subject-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .subject-room {
+    text-align: center;
+    padding: 4px 8px;
+    color: white;
+    border-radius: 0 3px 0 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .subject-teacher {
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    padding: 4px 8px;
+    color: white;
+    border-radius: 3px 0 0 0;
+    position: absolute;
+  }
+}
+</style>

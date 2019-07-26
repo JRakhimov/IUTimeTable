@@ -28,6 +28,10 @@ export default class Profile extends VuexModule {
     return this.profile;
   }
 
+  get getProfileTimetable() {
+    return this.profile.timetable;
+  }
+
   @Mutation
   setProfile(student: Student) {
     this.profile = UtilsMixin.updateStudentData(student);
