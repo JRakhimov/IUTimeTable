@@ -3,7 +3,7 @@
     <v-layout justify-center>
       <ProfileSkeleton class="mt-2" v-if="!isLoaded" />
 
-      <v-flex v-if="isLoaded" md6>
+      <v-flex v-else md6>
         <v-card>
           <v-layout
             class="profile-top elevation-3 pt-5"
