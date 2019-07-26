@@ -33,7 +33,7 @@ export default class UtilsMixin extends Vue {
     let stage = Number(yearString) - Number(current) - 1;
 
     if (monthString >= 5) {
-      stage = Number(year) - Number(current);
+      stage = Number(yearString) - Number(current);
     }
 
     switch (stage) {

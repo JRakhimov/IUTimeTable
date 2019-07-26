@@ -5,7 +5,7 @@
         <v-toolbar :color="color" dark>
           <v-toolbar-title>IUTimeTable</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn flat icon color="white">
+          <v-btn text icon color="white">
             <v-icon>help</v-icon>
           </v-btn>
         </v-toolbar>
@@ -18,7 +18,14 @@
       </v-layout>
 
       <v-layout>
-        <v-bottom-nav :active="bottomNav" :color="color" :value="true" :app="true" fixed shift dark>
+        <v-bottom-navigation
+          :background-color="color"
+          :value="bottomNav"
+          :app="true"
+          fixed
+          shift
+          dark
+        >
           <v-btn value="timetable" @click="changeRoute('timetable')" dark>
             <span>Timetable</span>
             <v-icon>chrome_reader_mode</v-icon>
@@ -38,12 +45,12 @@
             <span>Profile</span>
             <v-icon>face</v-icon>
           </v-btn>
-        </v-bottom-nav>
+        </v-bottom-navigation>
       </v-layout>
 
       <v-snackbar v-model="snackbar" :top="true" :timeout="4000">
         {{ snackbarText }}
-        <v-btn :color="color" flat @click="snackbar = false">Close</v-btn>
+        <v-btn :color="color" text @click="snackbar = false">Close</v-btn>
       </v-snackbar>
     </v-container>
   </v-app>
@@ -97,7 +104,7 @@ export default class DefaultLayout extends Mixins(UtilsMixin, VueOfflineMixin) {
   font-weight: 500;
 }
 
-.container.fluid {
+.container.container--fluid {
   padding: 0;
 }
 

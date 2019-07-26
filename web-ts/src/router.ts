@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import Router from "vue-router";
 
 import Login from "@/views/Login.vue";
+import Timetable from "@/views/Timetable.vue";
 
 import store from "./store";
 import GetDarkenColor from "./mixins/getDarkenColor";
@@ -22,6 +23,14 @@ export const router = new Router({
       meta: {
         layout: "login",
         routeColor: "#1D2331"
+      }
+    },
+    {
+      path: "/timetable",
+      name: "timetable",
+      component: Timetable,
+      meta: {
+        routeColor: "#5A97E5"
       }
     }
   ]

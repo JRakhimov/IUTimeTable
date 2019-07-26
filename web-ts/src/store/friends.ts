@@ -9,7 +9,7 @@ type FriendsResponse = {
   friends: Student[];
 };
 
-@Module
+@Module({ name: "Friends" })
 export default class Friends extends VuexModule {
   friends: ExtendedStudent[] = [];
 

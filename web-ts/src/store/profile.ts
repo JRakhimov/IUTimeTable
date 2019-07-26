@@ -20,9 +20,13 @@ const emptyProfile: ExtendedStudent = {
   color: ""
 };
 
-@Module
-export default class Groupmates extends VuexModule {
-  profile: ExtendedStudent = emptyProfile;
+@Module({ name: "Profile" })
+export default class Profile extends VuexModule {
+  public profile: ExtendedStudent = emptyProfile;
+
+  get getProfile() {
+    return this.profile;
+  }
 
   @Mutation
   setProfile(student: Student) {
@@ -35,7 +39,7 @@ export default class Groupmates extends VuexModule {
   }
 
   @Action({ commit: "setProfile" })
-  async fetchFriends(studentID: string): Promise<Student> {
+  async fetchProfile(studentID: string): Promise<Student> {
     const HOST_URL = process.env.VUE_APP_HOST_URL;
     const URL = `${HOST_URL}/students/${studentID}`;
     const jwt = localStorage.getItem("jwt");

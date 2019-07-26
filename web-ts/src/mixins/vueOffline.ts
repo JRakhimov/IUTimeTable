@@ -1,5 +1,4 @@
-import Vue from "vue";
-import { Component, Emit } from "vue-property-decorator";
+import { Component, Emit, Vue } from "vue-property-decorator";
 
 @Component
 export default class VueOffline extends Vue {

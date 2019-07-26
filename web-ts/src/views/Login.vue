@@ -11,16 +11,16 @@
           <v-layout column>
             <v-flex>
               <v-text-field
-                prefix="U"
+                :disabled="isOffline || loading"
                 prepend-icon="account_circle"
                 v-model="formData.studentID"
                 :rules="studentIDRules"
                 @focus="resetError()"
-                :disabled="isOffline || loading"
                 label="StudentID"
                 name="StudentID"
                 :counter="max"
                 type="text"
+                prefix="U"
                 clearable
                 required
               ></v-text-field>
@@ -31,10 +31,10 @@
                 :append-icon="showPassword ? 'visibility' : 'visibility_off'"
                 @click:append="showPassword = !showPassword"
                 :type="showPassword ? 'text' : 'password'"
+                :disabled="isOffline || loading"
                 v-model="formData.password"
                 :rules="passwordRules"
                 @focus="resetError()"
-                :disabled="isOffline || loading"
                 prepend-icon="lock"
                 label="Password"
                 name="Password"
@@ -43,15 +43,15 @@
               ></v-text-field>
             </v-flex>
 
-            <v-flex class="text-xs-center" v-if="error">
+            <v-flex align-self-center v-if="error">
               <p class="error-message">{{ message }}</p>
             </v-flex>
 
-            <v-flex class="text-xs-center" mb-3>
+            <v-flex align-self-center mb-3>
               <v-btn
                 :color="error ? '#E45164' : '#1976d2'"
-                @click.prevent="login()"
                 :disabled="!valid || isOffline"
+                @click.prevent="login()"
                 :loading="loading"
                 type="submit"
                 large
@@ -67,9 +67,22 @@
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
+import { getModule } from "vuex-module-decorators";
 import axios from "axios";
 
 import VueOfflineMixin from "../mixins/vueOffline";
+import ProfileModule from "../store/profile";
+import { Student } from "../types";
+import store from "../store";
+
+const Profile = getModule(ProfileModule, store);
+
+type AuthResponse = {
+  status: boolean;
+  jwt: string;
+  student: Student;
+  message?: string;
+};
 
 @Component
 export default class DefaultLayout extends Mixins(VueOfflineMixin) {
@@ -108,16 +121,19 @@ export default class DefaultLayout extends Mixins(VueOfflineMixin) {
     const URL = `${process.env.VUE_APP_HOST_URL}/auth/eclass`;
 
     try {
-      const { data } = await axios.post(URL, { ...this.formData, studentID });
+      const { data }: { data: AuthResponse } = await axios.post(URL, {
+        ...this.formData,
+        studentID
+      });
 
       if (data.status) {
-        localStorage.setItem("jwt", data.jwt);
-        this.$store.commit("setProfile", data.student);
+        localStorage.setItem("jwt", data.jwt || "");
+        await Profile.setProfile(data.student);
 
         this.$router.replace({ name: "timetable" });
       } else {
         this.error = true;
-        this.message = data.message;
+        this.message = data.message || "";
       }
     } catch (error) {
       console.log(error);
@@ -163,7 +179,7 @@ export default class DefaultLayout extends Mixins(VueOfflineMixin) {
   box-shadow: 0px 8px 54px 0px #1d2331;
 
   i {
-    font-size: 90px;
+    font-size: 90px !important;
     color: #fff;
     margin-top: 10px;
   }
