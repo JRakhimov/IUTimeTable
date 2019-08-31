@@ -10,7 +10,7 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class Default extends Vue {
+export default class App extends Vue {
   get layout() {
     return `${this.$route.meta.layout || "default"}-layout`;
   }

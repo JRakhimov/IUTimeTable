@@ -7,7 +7,7 @@
         <div class="end-time">{{ lessonInfo.endTime }}</div>
       </v-flex>
 
-      <v-flex class="subject-name">{{ lessonInfo.subjectName }} ({{ lessonInfo.sectionNumber }})</v-flex>
+      <v-flex class="subject-name">{{ subjectName }} ({{ lessonInfo.sectionNumber }})</v-flex>
     </v-layout>
 
     <v-layout>
@@ -46,6 +46,10 @@ export default class Lesson extends Mixins(UtilsMixin) {
     }
   })
   readonly lessonInfo!: LessonInfo;
+
+  get subjectName() {
+    return this.lessonInfo.subjectName.replace("&amp;", "");
+  }
 }
 </script>
 

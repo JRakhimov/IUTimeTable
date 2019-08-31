@@ -12,7 +12,7 @@
     <v-tab-item v-for="(tab, index) in tabs" :key="index">
       <v-container style="height: 82vh">
         <v-layout justify-center>
-          <v-progress-circular v-if="!loaded" :color="color" :size="60" :width="5" indeterminate></v-progress-circular>
+          <v-progress-circular v-if="!isLoaded" :color="color" :size="60" :width="5" indeterminate></v-progress-circular>
         </v-layout>
 
         <div v-if="tab.timetable">
@@ -26,7 +26,7 @@
         <v-layout class="no-timetable mt-5" v-else column align-center>
           <img src="../assets/sticker.webp" alt />
 
-          <h3 class="mt-2">You don't have lessons today🎉</h3>
+          <h3 class="mt-2">You don't have lessons today 🎉</h3>
         </v-layout>
       </v-container>
     </v-tab-item>
@@ -79,8 +79,8 @@ export default class Timetable extends Mixins(UtilsMixin) {
     }
   ];
 
-  get loaded() {
-    return Object.keys(this.timetable).length !== 0;
+  get isLoaded() {
+    return Object.keys(this.timetable).length > 0;
   }
 
   get timetable(): Timetable | {} {
@@ -97,8 +97,7 @@ export default class Timetable extends Mixins(UtilsMixin) {
     return {};
   }
 
-  @Watch("timetable")
-  public onTimetableChanged() {
+  private assignTimetableContent() {
     for (const tab of this.tabs) {
       // FIXME: Element implicitly has an 'any' type
       // because expression of type 'string' can't be
@@ -107,13 +106,19 @@ export default class Timetable extends Mixins(UtilsMixin) {
     }
   }
 
+  @Watch("timetable")
+  public onTimetableChanged() {
+    this.assignTimetableContent();
+  }
+
   public mounted() {
-    for (const tab of this.tabs) {
-      // FIXME: Element implicitly has an 'any' type
-      // because expression of type 'string' can't be
-      // used to index type 'TimeTable'
-      tab.timetable = (this.timetable as any)[tab.name];
-    }
+    this.assignTimetableContent();
+
+    const currentDateTab = this.tabs.findIndex(tab =>
+      tab.name.startsWith(new Date().toDateString().split(" ")[0])
+    );
+
+    this.activeTab = currentDateTab === -1 ? 0 : currentDateTab;
   }
 }
 </script>
