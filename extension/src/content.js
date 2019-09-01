@@ -1,12 +1,12 @@
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request === "getSVG") {
-    const svg = document.getElementsByClassName("print-sheet")[0];
-    if (svg) {
-      const svgData = svg.children[0].outerHTML;
+    const isEdupagePage = window.location.host === "iut.edupage.org";
+    const [svg] = document.getElementsByClassName("print-sheet");
 
-      sendResponse(svgData);
+    if (svg) {
+      sendResponse({ isEdupagePage, svg: svg.children[0].outerHTML });
     } else {
-      sendResponse(null);
+      sendResponse({ isEdupagePage });
     }
   }
 });
