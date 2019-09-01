@@ -1,13 +1,8 @@
-import PageIndex from './pages/Index';
-import PageEdit from './pages/Edit';
+import PageIndex from './pages/Index'
 
 export default [
   {
     path: '/',
     component: PageIndex
-  },
-  {
-    path: '/edit',
-    component: PageEdit
   }
-];
+]

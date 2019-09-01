@@ -1,1 +1,1 @@
-export const timeTableInfo = state => state.timeTableInfo;
+export const foo = (state) => state.foo
