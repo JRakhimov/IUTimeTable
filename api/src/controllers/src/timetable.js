@@ -5,15 +5,15 @@ import { firebase, Logger } from "../../utils";
  * @param {Response} res - Response class from express
  */
 export const add = async (req, res) => {
-  const { groupName, timetable } = req.body;
+  const { groupName, timeTable } = req.body;
 
   const logger = Logger("AddTimetable");
 
-  if (groupName && timetable) {
+  if (groupName && timeTable) {
     await firebase
       .database()
       .ref(`timetables/${groupName}`)
-      .set(timetable);
+      .set(timeTable);
 
     res.status(200).json({ status: true, message: `Timetable for group ${groupName} successfully saved.` });
     logger.info(`Timetable for group ${groupName} successfully saved.`);
