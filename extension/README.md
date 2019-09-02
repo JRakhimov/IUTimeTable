@@ -39,4 +39,4 @@ npm run build-zip
 
 ## Sample
 
-![sample](https://raw.githubusercontent.com/JRakhimov/IUTimeTable/master/extension/extension.gif)
+![sample](https://raw.githubusercontent.com/JRakhimov/IUTimeTable/master/extension/sample/extension.gif)
