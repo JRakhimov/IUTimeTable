@@ -36,3 +36,7 @@ npm run build-zip
 3. Click on Load unpacked extension
 4. Select IUTimeTable/extension/dist folder (dist folder will be available after running commands above)
 5. Taadaam 🎉
+
+## Sample
+
+![sample](https://raw.githubusercontent.com/JRakhimov/IUTimeTable/master/extension/extension.gif)
