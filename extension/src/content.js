@@ -1,19 +1,12 @@
-import { parse } from 'svg-parser';
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request === "getSVG") {
+    const isEdupagePage = window.location.host === "iut.edupage.org";
+    const [svg] = document.getElementsByClassName("print-sheet");
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request === 'getSVG') {
-    const svg = document.getElementsByClassName('print-sheet')[0];
     if (svg) {
-      const parsedSVG = parse(svg.children[0].outerHTML);
-
-      const toSend = {
-        isTeacher: parsedSVG.children[1].children[0].children[0].split(' ')[0] === 'Teacher',
-        parsedSVG
-      };
-
-      sendResponse(toSend);
+      sendResponse({ isEdupagePage, svg: svg.children[0].outerHTML });
     } else {
-      sendResponse(false);
+      sendResponse({ isEdupagePage });
     }
   }
 });
