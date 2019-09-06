@@ -1,23 +1,33 @@
 <template>
-  <v-card class="mb-3 subject">
-    <v-layout class="px-3 py-3 mb-4" align-center>
-      <v-flex class="mr-3 times" md3>
-        <div class="start-time">{{ lessonInfo.startTime }}</div>
-
-        <div class="end-time">{{ lessonInfo.endTime }}</div>
+  <v-card class="px-4 py-4 subject">
+    <v-layout align-center>
+      <v-flex class="name" :style="nameStyle" @click="showSnackbar(lessonInfo.subjectName)">
+        <span
+          class="unselectable"
+        >{{ lessonInfo.subjectNameShort }} ({{ lessonInfo.sectionNumber }})</span>
       </v-flex>
 
-      <v-flex class="subject-name">{{ subjectName }} ({{ lessonInfo.sectionNumber }})</v-flex>
+      <v-flex class="times" offset-8>
+        <p class="start">{{ lessonInfo.startTime }}</p>
+
+        <p class="end">{{ lessonInfo.endTime }}</p>
+      </v-flex>
     </v-layout>
 
-    <v-layout>
-      <div class="subject-room" :style="{ backgroundColor: color }" md4>Room: {{ lessonInfo.room }}</div>
-      <div
-        class="subject-teacher"
-        :style="{ backgroundColor: color }"
-        md4
-      >Teacher: {{ lessonInfo.teacherNameShort }}</div>
+    <v-layout class="footer" mt-2 pt-2>
+      <v-flex class="room">
+        <span>Room: {{ lessonInfo.room }}</span>
+      </v-flex>
+
+      <v-flex class="teacher" @click="showSnackbar(lessonInfo.teacherName)">
+        <span>Teacher: {{ lessonInfo.teacherNameShort }}</span>
+      </v-flex>
     </v-layout>
+
+    <v-snackbar v-model="snackbarShown" :timeout="2200">
+      {{ snackbarText }}
+      <v-btn color="#F7C951" text @click="snackbarShown = false">Close</v-btn>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -47,8 +57,41 @@ export default class Lesson extends Mixins(UtilsMixin) {
   })
   readonly lessonInfo!: LessonInfo;
 
-  get subjectName() {
-    return this.lessonInfo.subjectName.replace("&amp;", "");
+  get nameStyle() {
+    const rgb = this.hexToRgb(this.color);
+
+    if (rgb) {
+      const { r, g, b } = rgb;
+      return {
+        "background-color": this.color,
+        "box-shadow": `0 6px 18px 0 rgba(${r}, ${g}, ${b}, 0.8)`
+      };
+    }
+
+    return {
+      "background-color": this.color
+    };
+  }
+
+  private snackbarShown = false;
+  private snackbarText = "";
+
+  showSnackbar(snackbarText: string) {
+    if (this.snackbarShown) {
+      setTimeout(() => {
+        this.snackbarShown = false;
+      }, 200);
+
+      setTimeout(() => {
+        this.snackbarShown = true;
+        this.snackbarText = snackbarText;
+      }, 200);
+
+      return;
+    }
+
+    this.snackbarText = snackbarText;
+    this.snackbarShown = true;
   }
 }
 </script>
@@ -56,48 +99,55 @@ export default class Lesson extends Mixins(UtilsMixin) {
 <style lang="scss">
 .subject {
   position: relative;
+  min-height: 100px;
+
+  .name {
+    position: absolute;
+    top: -15px;
+    padding: 20px 24px;
+    text-align: center;
+    border-radius: 8px;
+    color: #ffffff;
+    max-width: 230px;
+    cursor: pointer;
+
+    span {
+      font-size: 19px;
+    }
+  }
 
   .times {
-    max-width: 100px;
-
-    .start-time {
-      text-align: center;
-      font-size: 2rem;
+    p {
+      margin: 0;
     }
 
-    .end-time {
-      text-align: center;
-      font-size: 1.5rem;
+    .start {
+      font-size: 28px;
+      font-weight: bold;
+      color: #666666;
+      text-align: right;
+    }
+
+    .end {
+      font-size: 24px;
+      color: #9b9b9b;
+      text-align: right;
+      margin-top: -4px;
     }
   }
 
-  .subject-name {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    text-align: left;
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
+  .footer {
+    border-top: 1px solid darken(#f6f6f6, 3);
+    color: #9b9b9b;
 
-  .subject-room {
-    text-align: center;
-    padding: 4px 8px;
-    color: white;
-    border-radius: 0 3px 0 0;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
+    .room {
+      text-align: left;
+    }
 
-  .subject-teacher {
-    bottom: 0;
-    right: 0;
-    text-align: center;
-    padding: 4px 8px;
-    color: white;
-    border-radius: 3px 0 0 0;
-    position: absolute;
+    .teacher {
+      text-align: right;
+      cursor: pointer;
+    }
   }
 }
 </style>

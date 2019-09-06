@@ -10,15 +10,15 @@
     <v-tab v-for="(tab, index) in tabs" :key="index" ripple>{{ tab.name }}</v-tab>
 
     <v-tab-item v-for="(tab, index) in tabs" :key="index">
-      <v-container style="height: 82vh">
+      <v-container class="pb-7">
         <v-layout justify-center>
           <v-progress-circular v-if="!isLoaded" :color="color" :size="60" :width="5" indeterminate></v-progress-circular>
         </v-layout>
 
-        <div v-if="tab.timetable">
+        <div v-if="tab.timetable" style="min-height: 71vh;">
           <v-layout v-for="(lesson, index) in tab.timetable" :key="index" justify-center>
             <v-flex md6>
-              <LessonView :lessonInfo="lesson" />
+              <LessonView :lessonInfo="lesson" class="mt-4 mb-5" />
             </v-flex>
           </v-layout>
         </div>

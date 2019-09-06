@@ -3,7 +3,7 @@
     <v-container class="pb-5" fluid>
       <v-layout>
         <v-toolbar :color="color" dark>
-          <v-toolbar-title>IUTimeTable</v-toolbar-title>
+          <v-toolbar-title class="unselectable">IUTimeTable</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn text icon color="white">
             <v-icon>help</v-icon>
