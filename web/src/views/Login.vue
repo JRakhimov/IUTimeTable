@@ -11,16 +11,16 @@
           <v-layout column>
             <v-flex>
               <v-text-field
-                prefix="U"
+                :disabled="isOffline || loading"
                 prepend-icon="account_circle"
                 v-model="formData.studentID"
                 :rules="studentIDRules"
                 @focus="resetError()"
-                :disabled="isOffline || loading"
                 label="StudentID"
                 name="StudentID"
                 :counter="max"
                 type="text"
+                prefix="U"
                 clearable
                 required
               ></v-text-field>
@@ -31,10 +31,10 @@
                 :append-icon="showPassword ? 'visibility' : 'visibility_off'"
                 @click:append="showPassword = !showPassword"
                 :type="showPassword ? 'text' : 'password'"
+                :disabled="isOffline || loading"
                 v-model="formData.password"
                 :rules="passwordRules"
                 @focus="resetError()"
-                :disabled="isOffline || loading"
                 prepend-icon="lock"
                 label="Password"
                 name="Password"
@@ -43,21 +43,20 @@
               ></v-text-field>
             </v-flex>
 
-            <v-flex class="text-xs-center" v-if="error">
+            <v-flex align-self-center v-if="error">
               <p class="error-message">{{ message }}</p>
             </v-flex>
 
-            <v-flex class="text-xs-center" mb-3>
+            <v-flex align-self-center mb-3>
               <v-btn
                 :color="error ? '#E45164' : '#1976d2'"
-                @click.prevent="login()"
                 :disabled="!valid || isOffline"
+                @click.prevent="login()"
                 :loading="loading"
                 type="submit"
                 large
-                flat
-                >Login</v-btn
-              >
+                text
+              >Login</v-btn>
             </v-flex>
           </v-layout>
         </v-form>
@@ -66,69 +65,88 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Mixins } from "vue-property-decorator";
+import { getModule } from "vuex-module-decorators";
 import axios from "axios";
-import { VueOfflineMixin } from "vue-offline";
 
-export default {
-  name: "Login",
-  mixins: [VueOfflineMixin],
+import VueOfflineMixin from "../mixins/vueOffline";
+import ProfileModule from "../store/profile";
+import { Student } from "../types";
+import store from "../store";
 
-  data() {
-    return {
-      showPassword: false,
-      loading: false,
-      valid: false,
-      error: false,
-      message: "",
-      studentIDRules: [
-        v => (v || "").length === 7 || `StudentID should containt 7 characters.`
-      ],
-      passwordRules: [v => !!v || "Password is required"],
-      max: 7,
-      formData: {
-        studentID: "",
-        password: ""
-      }
-    };
-  },
+const Profile = getModule(ProfileModule, store);
 
-  methods: {
-    resetError() {
-      this.error = false;
-    },
-    async login() {
-      this.error = false;
-
-      let studentID = this.formData.studentID;
-      studentID = studentID.split("");
-      studentID.unshift("U");
-      studentID = studentID.join("");
-
-      this.loading = true;
-
-      const URL = `${this.HOST_URL}/auth/eclass`;
-
-      try {
-        const { data } = await axios.post(URL, { ...this.formData, studentID });
-
-        if (data.status) {
-          localStorage.setItem("jwt", data.jwt);
-          this.$store.commit("setProfile", data.student);
-
-          this.$router.replace({ name: "timetable" });
-        } else {
-          this.error = true;
-          this.message = data.message;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-
-      this.loading = false;
-    }
-  }
+type AuthResponse = {
+  status: boolean;
+  jwt?: string;
+  student?: Student;
+  message?: string;
 };
+
+@Component
+export default class DefaultLayout extends Mixins(VueOfflineMixin) {
+  private showPassword = false;
+  private loading = false;
+  private valid = false;
+  private error = false;
+  private message = "";
+
+  private studentIDRules = [
+    (v: string) =>
+      (v || "").length === 7 || `StudentID should containt 7 characters.`,
+    (v: string) => !isNaN(Number(v || "")) || "Only numbers are allowed."
+  ];
+  private passwordRules = [(v: string) => !!v || "Password is required."];
+  private max = 7;
+
+  private formData = {
+    studentID: "",
+    password: ""
+  };
+
+  resetError() {
+    this.error = false;
+  }
+
+  async login() {
+    this.error = false;
+
+    let studentID = this.formData.studentID;
+    let studentIDArray = studentID.split("");
+    studentIDArray.unshift("U");
+    studentID = studentIDArray.join("");
+
+    this.loading = true;
+
+    const URL = `${process.env.VUE_APP_HOST_URL}/auth/eclass`;
+
+    try {
+      const { data }: { data: AuthResponse } = await axios.post(URL, {
+        ...this.formData,
+        studentID
+      });
+
+      if (data.status && data.jwt && data.student) {
+        localStorage.setItem("jwt", data.jwt);
+        await Profile.setProfile(data.student);
+
+        this.$router.replace({ name: "timetable" });
+      } else {
+        this.error = true;
+        this.message = data.message || "Error";
+      }
+    } catch (error) {
+      this.error = true;
+      this.message = error.message || "Error";
+
+      // tslint:disable-next-line:no-console
+      console.log(error);
+    }
+
+    this.loading = false;
+  }
+}
 </script>
 
 <style lang="scss">
@@ -166,7 +184,7 @@ export default {
   box-shadow: 0px 8px 54px 0px #1d2331;
 
   i {
-    font-size: 90px;
+    font-size: 90px !important;
     color: #fff;
     margin-top: 10px;
   }
