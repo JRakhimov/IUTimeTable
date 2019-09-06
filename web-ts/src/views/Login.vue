@@ -79,8 +79,8 @@ const Profile = getModule(ProfileModule, store);
 
 type AuthResponse = {
   status: boolean;
-  jwt: string;
-  student: Student;
+  jwt?: string;
+  student?: Student;
   message?: string;
 };
 
@@ -94,9 +94,10 @@ export default class DefaultLayout extends Mixins(VueOfflineMixin) {
 
   private studentIDRules = [
     (v: string) =>
-      (v || "").length === 7 || `StudentID should containt 7 characters.`
+      (v || "").length === 7 || `StudentID should containt 7 characters.`,
+    (v: string) => !isNaN(Number(v || "")) || "Only numbers are allowed."
   ];
-  private passwordRules = [(v: string) => !!v || "Password is required"];
+  private passwordRules = [(v: string) => !!v || "Password is required."];
   private max = 7;
 
   private formData = {
@@ -126,16 +127,20 @@ export default class DefaultLayout extends Mixins(VueOfflineMixin) {
         studentID
       });
 
-      if (data.status) {
-        localStorage.setItem("jwt", data.jwt || "");
+      if (data.status && data.jwt && data.student) {
+        localStorage.setItem("jwt", data.jwt);
         await Profile.setProfile(data.student);
 
         this.$router.replace({ name: "timetable" });
       } else {
         this.error = true;
-        this.message = data.message || "";
+        this.message = data.message || "Error";
       }
     } catch (error) {
+      this.error = true;
+      this.message = error.message || "Error";
+
+      // tslint:disable-next-line:no-console
       console.log(error);
     }
 

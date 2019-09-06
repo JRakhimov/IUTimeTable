@@ -26,6 +26,8 @@
     "vuex-persist": "^2.0.1"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.3.3",
+    "@types/node": "^12.7.4",
     "@vue/cli-plugin-babel": "^3.9.0",
     "@vue/cli-plugin-pwa": "^3.9.0",
     "@vue/cli-plugin-typescript": "^3.9.0",

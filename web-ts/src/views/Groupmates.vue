@@ -118,10 +118,10 @@ export default class Groupmates extends Mixins(UtilsMixin) {
 
     setTimeout(this.clockPreloader, 50);
 
-    this.pullToConfig.loadingText = "Updating " + this.clock;
+    this.pullToConfig.loadingText = `Updating ${this.clock}`;
   }
 
-  async refresh(loaded) {
+  async refresh(loaded: any) {
     const { groupName } = this.$store.state.profile;
 
     this.updating = true;
