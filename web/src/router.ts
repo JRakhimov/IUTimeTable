@@ -34,6 +34,30 @@ export const router = new Router({
         routeColor: "#5A97E5"
       }
     },
+    // {
+    //   path: "/groupmates",
+    //   name: "groupmates",
+    //   component: Groupmates,
+    //   meta: {
+    //     routeColor: "#8F75D3"
+    //   }
+    // },
+    // {
+    //   path: "/friends",
+    //   name: "friends",
+    //   component: Friends,
+    //   meta: {
+    //     routeColor: "#34B696"
+    //   }
+    // },
+    // {
+    //   path: "/friends/:friendID",
+    //   name: "friends-timetable",
+    //   component: Timetable,
+    //   meta: {
+    //     routeColor: "#34B696"
+    //   }
+    // },
     {
       path: "/profile",
       name: "profile",

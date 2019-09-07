@@ -21,8 +21,8 @@ Vue.component("login-layout", Login);
 Vue.config.productionTip = false;
 
 new Vue({
-  router,
   store,
+  router,
   render: h => h(App),
   vuetify: new Vuetify({})
 }).$mount("#app");

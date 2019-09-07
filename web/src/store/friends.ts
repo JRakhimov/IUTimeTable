@@ -6,7 +6,7 @@ import UtilsMixin from "../mixins/utils";
 
 type FriendsResponse = {
   status: boolean;
-  friends: Student[];
+  friends?: Student[];
 };
 
 @Module({ name: "Friends" })
@@ -39,7 +39,7 @@ export default class Friends extends VuexModule {
 
     const { data }: { data: FriendsResponse } = await axios.get(URL, { headers: { "X-Auth": jwt } });
 
-    if (data.status) {
+    if (data.status && data.friends) {
       return data.friends;
     }
 
