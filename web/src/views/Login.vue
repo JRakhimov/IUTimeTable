@@ -178,10 +178,10 @@ export default class DefaultLayout extends Mixins(VueOfflineMixin) {
   top: -85px;
   padding: 10px 0;
   background: #1976d2;
-  border-radius: 5px;
+  border-radius: 8px;
   position: absolute;
   text-align: center;
-  box-shadow: 0px 8px 54px 0px #1d2331;
+  box-shadow: 0px 6px 18px 0px rgba(25, 118, 210, 0.8);
 
   i {
     font-size: 90px !important;
