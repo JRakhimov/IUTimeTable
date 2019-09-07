@@ -13,7 +13,7 @@
     <v-tab-item v-for="(tab, index) in tabs" :key="index">
       <v-container class="pb-7">
         <v-layout justify-center>
-          <v-progress-circular v-if="!isLoaded" :color="color" :size="60" :width="5" indeterminate></v-progress-circular>
+          <TimetableSkeleton v-if="!isLoaded" />
         </v-layout>
 
         <div v-if="tab.timetable" style="min-height: 71vh;">
@@ -45,6 +45,7 @@ import UtilsMixin from "../mixins/utils";
 import store from "../store";
 
 import LessonView from "../components/LessonView.vue";
+import TimetableSkeleton from "../components/skeletons/TimetableSkeleton.vue";
 
 const Friends = getModule(FriendsModule, store);
 const Profile = getModule(ProfileModule, store);
@@ -54,9 +55,10 @@ type Tab = {
   timetable: TimeTable | {};
 };
 
-@Component({ components: { LessonView } })
+@Component({ components: { LessonView, TimetableSkeleton } })
 export default class Timetable extends Mixins(UtilsMixin) {
   private activeTab: number = 0;
+  private status = false;
   private tabs: Tab[] = [
     {
       name: "Monday",

@@ -79,6 +79,8 @@ export default class Lesson extends Mixins(UtilsMixin) {
   private snackbarText = "";
 
   showSnackbar(snackbarText: string) {
+    snackbarText = snackbarText.replace("&amp;", "");
+
     if (this.snackbarShown) {
       setTimeout(() => {
         this.snackbarShown = false;

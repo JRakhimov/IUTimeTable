@@ -42,4 +42,10 @@ export default class App extends Vue {
   -ms-user-select: none;
   user-select: none;
 }
+
+.j-fab {
+  position: absolute !important;
+  bottom: 5.5rem;
+  right: 1.5rem;
+}
 </style>

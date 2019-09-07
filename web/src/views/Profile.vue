@@ -75,8 +75,6 @@
 import { Component, Mixins } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 
-import ProfileSkeleton from "../components/ProfileSkeleton.vue";
-
 import VueOfflineMixin from "../mixins/vueOffline";
 import GroupmatesModule from "../store/groupmates";
 import ProfileModule from "../store/profile";
@@ -84,6 +82,8 @@ import FriendsModule from "../store/friends";
 import UtilsMixin from "../mixins/utils";
 import { Student } from "../types";
 import store from "../store";
+
+import ProfileSkeleton from "../components/skeletons/ProfileSkeleton.vue";
 
 const Groupmates = getModule(GroupmatesModule, store);
 const Profile = getModule(ProfileModule, store);
