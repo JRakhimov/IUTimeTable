@@ -4,6 +4,7 @@
     class="w-100 shadow-top"
     slider-color="#F7C951"
     v-model="activeTab"
+    center-active
     grow
     dark
   >

@@ -8,9 +8,9 @@
       </v-flex>
 
       <v-flex class="times" offset-8>
-        <p class="start">{{ lessonInfo.startTime }}</p>
+        <p class="start">{{ timeLength(lessonInfo.startTime) }}</p>
 
-        <p class="end">{{ lessonInfo.endTime }}</p>
+        <p class="end">{{ timeLength(lessonInfo.endTime) }}</p>
       </v-flex>
     </v-layout>
 
@@ -19,8 +19,10 @@
         <span>Room: {{ lessonInfo.room }}</span>
       </v-flex>
 
-      <v-flex class="teacher" @click="showSnackbar(lessonInfo.teacherName)">
-        <span>Teacher: {{ lessonInfo.teacherNameShort }}</span>
+      <v-flex class="teacher">
+        <span
+          @click="showSnackbar(lessonInfo.teacherName)"
+        >Teacher: {{ lessonInfo.teacherNameShort }}</span>
       </v-flex>
     </v-layout>
 
@@ -93,6 +95,14 @@ export default class Lesson extends Mixins(UtilsMixin) {
     this.snackbarText = snackbarText;
     this.snackbarShown = true;
   }
+
+  timeLength(time: string) {
+    let [a, b] = time.split(":");
+
+    a = a.length <= 1 ? `0${a}` : a;
+
+    return `${a}:${b}`;
+  }
 }
 </script>
 
@@ -146,7 +156,9 @@ export default class Lesson extends Mixins(UtilsMixin) {
 
     .teacher {
       text-align: right;
-      cursor: pointer;
+      span {
+        cursor: pointer;
+      }
     }
   }
 }

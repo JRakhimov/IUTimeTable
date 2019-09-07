@@ -30,6 +30,10 @@ export default class App extends Vue {
   opacity: 0;
 }
 
+#app {
+  background: #ffffff;
+}
+
 .unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
