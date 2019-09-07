@@ -1,12 +1,14 @@
 import Vue from "vue";
 import jwt from "jsonwebtoken";
 import Router from "vue-router";
+import { getModule } from "vuex-module-decorators";
 
 import Login from "@/views/Login.vue";
 import Profile from "@/views/Profile.vue";
 import Timetable from "@/views/Timetable.vue";
 
 import store from "./store";
+import ProfileModule from "./store/profile";
 import GetDarkenColor from "./mixins/getDarkenColor";
 
 Vue.use(Router);
@@ -70,6 +72,8 @@ export const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  const Profile = getModule(ProfileModule, store);
+
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ["/login"];
   const authRequired = publicPages.includes(to.path);
@@ -92,7 +96,7 @@ router.beforeEach((to, from, next) => {
     return next("/timetable");
   }
 
-  if (jwtToken && !store.state.profile.studentID) {
+  if (jwtToken && !Profile.getProfile.studentID) {
     const decodedJWT = jwt.decode(jwtToken) as { studentID: string };
 
     store.dispatch("fetchProfile", decodedJWT.studentID);

@@ -1,72 +1,85 @@
 <template>
-  <v-container>
+  <v-container class="mt-3">
     <v-layout justify-center>
       <ProfileSkeleton class="mt-2" v-if="!isLoaded" />
 
       <v-flex v-else md6>
-        <v-card>
-          <v-layout
-            class="profile-top elevation-3 pt-5"
-            :style="{ backgroundColor: color }"
-            align-center
-            column
-          >
-            <v-avatar color="white mb-2" size="70">
-              <span class="headline" :style="{ color: color }">
-                {{
-                profile.fullNameLetter
-                }}
-              </span>
-            </v-avatar>
+        <div class="profile">
+          <div class="j-flex justify-center">
+            <div>
+              <v-layout
+                class="top py-0 px-sm-8 px-md-10"
+                :style="profileTopStyle"
+                align-center
+                justify-center
+                column
+              >
+                <v-avatar color="white mb-2" size="70">
+                  <span class="headline" :style="{ color }">{{ profile.fullNameLetter }}</span>
+                </v-avatar>
 
-            <h2 class="student-name">{{ profile.fullName }}</h2>
-          </v-layout>
+                <h2 class="student-name">{{ profile.fullName }}</h2>
+              </v-layout>
+            </div>
+          </div>
 
-          <v-layout class="profile-body py-3 px-4" column>
-            <v-layout>
-              <v-flex class="icon" align-self-center md1 xs2>
-                <v-icon :style="{ color: color }">group</v-icon>
-              </v-flex>
+          <v-card class="pt-8">
+            <v-layout class="body py-3 px-4" column>
+              <v-layout>
+                <v-flex class="icon" align-self-center xs2 sm1 md2>
+                  <v-icon :style="{ color }">group</v-icon>
+                </v-flex>
 
-              <v-flex class="title" md6>
-                <p>{{ profile.groupName }}</p>
-                <p class="sub-title">Group</p>
-              </v-flex>
+                <v-flex class="title" align-self-center md10>
+                  <p>{{ profile.groupName }}</p>
+                  <p class="sub-title">Group</p>
+                </v-flex>
+              </v-layout>
+
+              <v-divider class="my-2"></v-divider>
+
+              <v-layout>
+                <v-flex class="icon" align-self-center xs2 sm1 md2>
+                  <v-icon :style="{ color }">fingerprint</v-icon>
+                </v-flex>
+
+                <v-flex class="title" align-self-center md10>
+                  <p>{{ profile.studentID }}</p>
+                  <p class="sub-title">StudentID</p>
+                </v-flex>
+              </v-layout>
+
+              <v-divider class="my-2"></v-divider>
+
+              <v-layout>
+                <v-flex class="icon" align-self-center xs2 sm1 md2>
+                  <v-icon :style="{ color }">clear_all</v-icon>
+                </v-flex>
+
+                <v-flex class="title" align-self-center md10>
+                  <p>{{ profile.stage }}</p>
+                  <p class="sub-title">Stage</p>
+                </v-flex>
+              </v-layout>
             </v-layout>
-
-            <v-divider class="my-2"></v-divider>
-
-            <v-layout>
-              <v-flex class="icon" align-self-center md1 xs2>
-                <v-icon :style="{ color: color }">fingerprint</v-icon>
-              </v-flex>
-
-              <v-flex class="title" md6>
-                <p>{{ profile.studentID }}</p>
-                <p class="sub-title">StudentID</p>
-              </v-flex>
-            </v-layout>
-
-            <v-divider class="my-2"></v-divider>
-
-            <v-layout>
-              <v-flex class="icon" align-self-center md1 xs2>
-                <v-icon :style="{ color: color }">clear_all</v-icon>
-              </v-flex>
-
-              <v-flex class="title" md6>
-                <p>{{ profile.stage }}</p>
-                <p class="sub-title">Stage</p>
-              </v-flex>
-            </v-layout>
-
-            <v-layout justify-end align-end>
-              <v-btn v-if="isOnline" :color="color" @click="logOut()" dark>LOGOUT</v-btn>
-            </v-layout>
-          </v-layout>
-        </v-card>
+          </v-card>
+        </div>
       </v-flex>
     </v-layout>
+
+    <v-fab-transition>
+      <v-btn
+        :style="profileTopStyle"
+        class="j-fab"
+        :color="color"
+        v-show="isOnline"
+        @click="logOut()"
+        dark
+        fab
+      >
+        <v-icon>exit_to_app</v-icon>
+      </v-btn>
+    </v-fab-transition>
   </v-container>
 </template>
 
@@ -99,6 +112,22 @@ export default class ProfileView extends Mixins(UtilsMixin, VueOfflineMixin) {
     return Profile.getProfile.fullName.length;
   }
 
+  get profileTopStyle() {
+    const rgb = this.hexToRgb(this.color);
+
+    if (rgb) {
+      const { r, g, b } = rgb;
+      return {
+        "background-color": this.color,
+        "box-shadow": `0 6px 18px 0 rgba(${r}, ${g}, ${b}, 0.8)`
+      };
+    }
+
+    return {
+      "background-color": this.color
+    };
+  }
+
   async logOut() {
     localStorage.removeItem("jwt");
     this.$router.replace({ name: "login" });
@@ -111,46 +140,67 @@ export default class ProfileView extends Mixins(UtilsMixin, VueOfflineMixin) {
 </script>
 
 <style lang="scss">
-.profile-top {
-  height: 200px;
+.profile {
+  position: relative;
 
-  span {
-    font-weight: bold;
+  .j-flex {
+    position: relative;
+    display: flex;
+    z-index: 2;
   }
 
-  .student-name {
-    font-size: 2rem;
-    text-align: center;
-    color: #ffffff;
-  }
-}
+  .top {
+    height: 200px;
+    border-radius: 8px !important;
+    padding-left: 15px;
+    padding-right: 15px;
 
-.profile-body {
-  min-height: 270px;
+    .headline {
+      font-weight: bold !important;
+    }
 
-  .icon {
-    text-align: left;
-    padding-left: 8px;
+    span {
+      font-weight: bold;
+    }
 
-    i {
-      font-size: 1.6rem;
+    .student-name {
+      font-size: 2rem;
+      text-align: center;
+      color: #ffffff;
     }
   }
 
-  .title {
-    .sub-title {
-      text-align: left;
-      font-size: 0.85rem;
-      color: #969696;
-      margin-bottom: 0;
-      margin-top: -10px;
+  .v-card {
+    margin-top: -2rem;
+  }
+
+  .body {
+    min-height: 270px;
+
+    .icon {
+      text-align: center;
+      i {
+        font-size: 1.6rem;
+      }
     }
 
-    p {
-      text-align: left;
-      font-size: 1.05rem;
-      color: #484848;
-      margin-bottom: 0;
+    .title {
+      .sub-title {
+        text-align: left;
+        font-size: 0.85rem;
+        color: #969696;
+        font-weight: 400;
+        margin-bottom: 0;
+        margin-top: -10px;
+      }
+
+      p {
+        text-align: left;
+        font-size: 1.05rem;
+        color: #484848;
+        margin-bottom: 0;
+        font-weight: 500;
+      }
     }
   }
 }
