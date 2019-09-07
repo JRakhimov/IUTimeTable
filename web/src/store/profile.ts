@@ -1,12 +1,17 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
 import axios from "axios";
 
-import { Student, ExtendedStudent, Stage } from "../types";
+import { Student, ExtendedStudent, Stage, TimeTable } from "../types";
 import UtilsMixin from "../mixins/utils";
 
 type ProfileResponse = {
   status: boolean;
   student: Student;
+};
+
+type TimetableResponse = {
+  status: boolean;
+  timetable: TimeTable;
 };
 
 const emptyProfile: ExtendedStudent = {
@@ -38,8 +43,18 @@ export default class Profile extends VuexModule {
   }
 
   @Mutation
+  setTimetable(timetable: TimeTable | {}) {
+    this.profile.timetable = timetable;
+  }
+
+  @Mutation
   clearProfile() {
     this.profile = emptyProfile;
+  }
+
+  @Mutation
+  clearTimetable() {
+    this.profile.timetable = {};
   }
 
   @Action({ commit: "setProfile" })
@@ -55,5 +70,20 @@ export default class Profile extends VuexModule {
     }
 
     return emptyProfile;
+  }
+
+  @Action({ commit: "setTimetable" })
+  async fetchTimetable(group: string): Promise<TimeTable | {}> {
+    const HOST_URL = process.env.VUE_APP_HOST_URL;
+    const URL = `${HOST_URL}/timetable/${group}`;
+    const jwt = localStorage.getItem("jwt");
+
+    const { data }: { data: TimetableResponse } = await axios.get(URL, { headers: { "X-Auth": jwt } });
+
+    if (data.status) {
+      return data.timetable;
+    }
+
+    return {};
   }
 }

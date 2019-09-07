@@ -44,7 +44,7 @@ export default class App extends Vue {
 }
 
 .j-fab {
-  position: absolute !important;
+  position: fixed !important;
   bottom: 5.5rem;
   right: 1.5rem;
 }

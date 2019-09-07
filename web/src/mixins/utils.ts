@@ -1,7 +1,26 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 
-import { Student, Stage, ExtendedStudent } from "../types";
+import { Student, Stage, ExtendedStudent, TimeTable, LessonInfo } from "../types";
+
+const sortLessons = (timetable: TimeTable | {}) => {
+  for (const day in timetable) {
+    if (timetable.hasOwnProperty(day)) {
+      let lessons: LessonInfo[] = (timetable as any)[day];
+
+      lessons = lessons.sort((a, b) => {
+        const [aTime] = a.startTime.split(":");
+        const [bTime] = b.startTime.split(":");
+
+        return Number(aTime) - Number(bTime);
+      });
+
+      (timetable as any)[day] = lessons;
+    }
+  }
+
+  return timetable;
+};
 
 @Component
 export default class UtilsMixin extends Vue {
@@ -19,6 +38,22 @@ export default class UtilsMixin extends Vue {
           b: parseInt(result[3], 16)
         }
       : null;
+  }
+
+  colorStyles(withBoxShadow = true) {
+    const rgb = this.hexToRgb(this.color);
+
+    if (withBoxShadow && rgb) {
+      const { r, g, b } = rgb;
+      return {
+        "background-color": this.color,
+        "box-shadow": `0 6px 18px 0 rgba(${r}, ${g}, ${b}, 0.8)`
+      };
+    }
+
+    return {
+      "background-color": this.color
+    };
   }
 
   static formatName(fullName: string): string {
@@ -89,13 +124,13 @@ export default class UtilsMixin extends Vue {
 
     return {
       fullName: this.formatName(fullName),
+      timetable: sortLessons(timetable),
       stage: this.getStage(studentID),
       color: this.getRandomColor(),
       oneNameLetter: fullName[0],
       fullNameLetter,
       groupName,
-      studentID,
-      timetable
+      studentID
     };
   }
 }
