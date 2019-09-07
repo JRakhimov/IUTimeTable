@@ -6,6 +6,7 @@ import { getModule } from "vuex-module-decorators";
 import Login from "@/views/Login.vue";
 import Profile from "@/views/Profile.vue";
 import Timetable from "@/views/Timetable.vue";
+import Groupmates from "@/views/Groupmates.vue";
 
 import store from "./store";
 import ProfileModule from "./store/profile";
@@ -36,14 +37,14 @@ export const router = new Router({
         routeColor: "#5A97E5"
       }
     },
-    // {
-    //   path: "/groupmates",
-    //   name: "groupmates",
-    //   component: Groupmates,
-    //   meta: {
-    //     routeColor: "#8F75D3"
-    //   }
-    // },
+    {
+      path: "/groupmates",
+      name: "groupmates",
+      component: Groupmates,
+      meta: {
+        routeColor: "#8F75D3"
+      }
+    },
     // {
     //   path: "/friends",
     //   name: "friends",

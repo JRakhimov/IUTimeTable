@@ -3,25 +3,6 @@ import Component from "vue-class-component";
 
 import { Student, Stage, ExtendedStudent, TimeTable, LessonInfo } from "../types";
 
-const sortLessons = (timetable: TimeTable | {}) => {
-  for (const day in timetable) {
-    if (timetable.hasOwnProperty(day)) {
-      let lessons: LessonInfo[] = (timetable as any)[day];
-
-      lessons = lessons.sort((a, b) => {
-        const [aTime] = a.startTime.split(":");
-        const [bTime] = b.startTime.split(":");
-
-        return Number(aTime) - Number(bTime);
-      });
-
-      (timetable as any)[day] = lessons;
-    }
-  }
-
-  return timetable;
-};
-
 @Component
 export default class UtilsMixin extends Vue {
   get color(): string {
@@ -117,14 +98,33 @@ export default class UtilsMixin extends Vue {
     return colors[getRandomNumber(0, 10)];
   }
 
+  static sortLessons(timetable: TimeTable | {}) {
+    for (const day in timetable) {
+      if (timetable.hasOwnProperty(day)) {
+        let lessons: LessonInfo[] = (timetable as any)[day];
+
+        lessons = lessons.sort((a, b) => {
+          const [aTime] = a.startTime.split(":");
+          const [bTime] = b.startTime.split(":");
+
+          return Number(aTime) - Number(bTime);
+        });
+
+        (timetable as any)[day] = lessons;
+      }
+    }
+
+    return timetable;
+  }
+
   static updateStudentData(studentData: Student): ExtendedStudent {
     const { fullName, groupName, studentID, timetable } = studentData;
     const [firstname, lastname] = fullName.split(" ");
     const fullNameLetter = firstname[0] + lastname[0];
 
     return {
+      timetable: this.sortLessons(timetable),
       fullName: this.formatName(fullName),
-      timetable: sortLessons(timetable),
       stage: this.getStage(studentID),
       color: this.getRandomColor(),
       oneNameLetter: fullName[0],

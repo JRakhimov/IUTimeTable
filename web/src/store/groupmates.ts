@@ -13,6 +13,10 @@ type GroupmatesResponse = {
 export default class Groupmates extends VuexModule {
   groupmates: ExtendedStudent[] = [];
 
+  get getGroupmates() {
+    return this.groupmates;
+  }
+
   @Mutation
   setGroupmates(groupmates: Student[]) {
     this.groupmates = groupmates.map(groupmate => UtilsMixin.updateStudentData(groupmate));
@@ -24,7 +28,7 @@ export default class Groupmates extends VuexModule {
   }
 
   @Action({ commit: "setGroupmates" })
-  async fetchFriends(groupName: string): Promise<Student[]> {
+  async fetchGroupmates(groupName: string): Promise<Student[]> {
     const HOST_URL = process.env.VUE_APP_HOST_URL;
     const URL = `${HOST_URL}/groups/${groupName}`;
     const jwt = localStorage.getItem("jwt");

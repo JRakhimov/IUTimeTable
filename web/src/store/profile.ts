@@ -44,7 +44,7 @@ export default class Profile extends VuexModule {
 
   @Mutation
   setTimetable(timetable: TimeTable | {}) {
-    this.profile.timetable = timetable;
+    this.profile.timetable = UtilsMixin.sortLessons(timetable);
   }
 
   @Mutation
