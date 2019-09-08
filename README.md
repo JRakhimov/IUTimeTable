@@ -1,5 +1,7 @@
 # IUTimeTable
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/bc14b8a5-8d3a-47cd-acb2-35077c0798e9/deploy-status)](https://app.netlify.com/sites/iutimetable/deploys)
+
 Easy way to run project:
 
 1. Install [Docker](https://www.docker.com/get-started)

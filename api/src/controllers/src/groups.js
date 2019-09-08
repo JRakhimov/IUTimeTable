@@ -100,7 +100,7 @@ export const getGroupStudents = async (req, res) => {
   if (group) {
     res.status(200).json({
       status: true,
-      group: Object.values(group)
+      students: Object.values(group)
     });
   } else {
     res.status(200).json({

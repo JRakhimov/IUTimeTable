@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <v-dialog v-model="dialog" max-width="600px">
+    <v-dialog v-model="dialogOpened" max-width="600px">
       <v-card>
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="isInputValid">
           <v-card-title>
             <span class="headline">Add friend</span>
           </v-card-title>
@@ -14,11 +14,11 @@
                   <v-text-field
                     prepend-icon="account_circle"
                     label="Friend's StudentID"
-                    :rules="studentIDRules"
+                    :rules="inputRules"
                     v-model="newFriendID"
                     name="StudentID"
                     :color="color"
-                    :counter="max"
+                    :counter="7"
                     type="number"
                     prefix="U"
                     clearable
@@ -31,83 +31,60 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :color="color" @click="closeDialog" flat>Close</v-btn>
+            <v-btn :color="color" @click="closeDialog" text>Close</v-btn>
             <v-btn
+              text
               type="submit"
               :color="color"
               @click.prevent="addFriend"
-              :loading="loading"
-              :disabled="!valid"
-              flat
-              >Add</v-btn
-            >
+              :loading="isAdding"
+              :disabled="!isInputValid"
+            >Add</v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
 
     <v-layout justify-center>
-      <FriendsSkeleton v-if="!friends" />
+      <FriendsSkeleton v-if="isLoading" />
 
-      <v-flex v-if="friends" md6>
+      <v-flex v-if="!isLoading" md6>
         <v-card>
           <v-list class="pr-3" two-line>
             <template v-for="(friend, index) in friendsList">
-              <v-subheader v-if="friend.header" :key="friend.header">
-                {{ friend.header }}
-              </v-subheader>
+              <v-subheader v-if="friend.header" :key="friend.header">{{ friend.header }}</v-subheader>
 
-              <v-divider
-                v-else-if="friend.divider"
-                :key="index"
-                :inset="friend.inset"
-              ></v-divider>
+              <v-divider v-else-if="friend.divider" :key="index" :inset="friend.inset"></v-divider>
 
-              <v-list-tile
+              <v-list-item
                 v-else
                 :key="friend.studentID"
                 @click="friendsTimetable(friend.studentID)"
                 avatar
               >
-                <v-list-tile-avatar>
+                <v-list-item-avatar>
                   <v-avatar :color="friend.color" size="40">
-                    <span class="white--text headline">
-                      {{ friend.oneNameLetter }}
-                    </span>
+                    <span class="white--text headline">{{ friend.oneNameLetter }}</span>
                   </v-avatar>
-                </v-list-tile-avatar>
+                </v-list-item-avatar>
 
-                <v-list-tile-content>
-                  <v-list-tile-title
-                    v-html="friend.fullName"
-                  ></v-list-tile-title>
-                  <v-list-tile-sub-title
-                    v-html="`${friend.studentID} • ${friend.groupName}`"
-                  ></v-list-tile-sub-title>
-                </v-list-tile-content>
+                <v-list-item-content>
+                  <v-list-item-title v-html="friend.fullName"></v-list-item-title>
+                  <v-list-item-subtitle v-html="`${friend.studentID} • ${friend.groupName}`"></v-list-item-subtitle>
+                </v-list-item-content>
 
-                <v-list-tile-action>
+                <v-list-item-action>
                   <v-fab-transition>
-                    <v-btn
-                      v-if="isOnline"
-                      @click.stop="removeFriend(friend.studentID)"
-                      icon
-                      ripple
-                    >
+                    <v-btn v-if="isOnline" @click.stop="removeFriend(friend.studentID)" icon ripple>
                       <v-icon color="#E45164">delete</v-icon>
                     </v-btn>
                   </v-fab-transition>
-                </v-list-tile-action>
-              </v-list-tile>
+                </v-list-item-action>
+              </v-list-item>
             </template>
           </v-list>
 
-          <v-progress-linear
-            :indeterminate="true"
-            :active="deletePending"
-            :color="color"
-            height="5"
-          ></v-progress-linear>
+          <v-progress-linear :indeterminate="true" :active="isDeleting" :color="color" height="5"></v-progress-linear>
         </v-card>
       </v-flex>
     </v-layout>
@@ -116,7 +93,8 @@
       <v-btn
         :color="color"
         @click="openDialog"
-        v-show="!dialog && isOnline && friends"
+        :style="colorStyles()"
+        v-show="!dialogOpened && isOnline && !isLoading"
         class="add-friend"
         dark
         fab
@@ -127,145 +105,106 @@
   </v-container>
 </template>
 
-<script>
-import axios from "axios";
-import { utils } from "../mixins/utils";
-import { VueOfflineMixin } from "vue-offline";
-import FriendsSkeleton from "../components/FriendsSkeleton";
+<script lang="ts">
+import { Component, Mixins } from "vue-property-decorator";
+import { getModule } from "vuex-module-decorators";
 
-export default {
-  name: "Friends",
-  mixins: [utils, VueOfflineMixin],
-  components: { FriendsSkeleton },
+import FriendsSkeleton from "../components/skeletons/FriendsSkeleton.vue";
 
-  data() {
-    return {
-      deletePending: false,
-      newFriendID: null,
-      loading: false,
-      friends: null,
-      dialog: false,
-      valid: true,
-      max: 7,
-      studentIDRules: [
-        v => (v || "").length === 7 || `StudentID should containt 7 characters.`
-      ]
-    };
-  },
+import { FriendsModule, ProfileModule } from "../store";
+import { Student, ExtendedStudent } from "../types";
+import VueOfflineMixin from "../mixins/vueOffline";
+import UtilsMixin from "../mixins/utils";
 
-  computed: {
-    friendsList() {
-      const header = `You have ${this.friends.length} ${
-        this.friends.length === 1 ? "friend" : "friends"
-      }`;
-      const tmpFriends = [{ header }];
+type FriendsHeader = { header: string };
+type FriendsDivider = { divider: boolean; inset: boolean };
 
-      this.friends.forEach((friend, index) => {
-        tmpFriends.push(friend);
+@Component({ components: { FriendsSkeleton } })
+export default class Friends extends Mixins(UtilsMixin, VueOfflineMixin) {
+  private dialogOpened = false;
+  private isInputValid = true;
+  private newFriendID = "";
+  private inputRules = [
+    (v: string) =>
+      (v || "").length === 7 || `StudentID should containt 7 characters.`,
+    (v: string) =>
+      `U${v}` !== ProfileModule.getProfile.studentID ||
+      "You cannot add yourself."
+  ];
 
-        if (this.friends.length !== index + 1) {
-          tmpFriends.push({ divider: true, inset: true });
-        }
-      });
+  private isDeleting = false;
+  private isLoading = false;
+  private isAdding = false;
 
-      return tmpFriends;
-    }
-  },
+  get friends() {
+    return FriendsModule.getFriends;
+  }
+
+  get friendsList() {
+    const header = `You have ${this.friends.length} ${
+      this.friends.length === 1 ? "friend" : "friends"
+    }`;
+
+    const tmpFriends: Array<
+      FriendsHeader | ExtendedStudent | FriendsDivider
+    > = [{ header }];
+
+    this.friends.forEach((groupmate: ExtendedStudent, index) => {
+      tmpFriends.push(groupmate);
+
+      if (this.friends.length !== index + 1) {
+        tmpFriends.push({ divider: true, inset: true });
+      }
+    });
+
+    return tmpFriends;
+  }
 
   async mounted() {
-    const { studentID } = this.$store.state.profile;
-    const { friends } = this.$store.state;
+    const { studentID } = ProfileModule.getProfile;
+    let friends = FriendsModule.getFriends;
 
-    if (studentID && !friends) {
-      await this.$store.dispatch("fetchFriends", studentID);
-    }
+    if (studentID && !friends.length) {
+      this.isLoading = true;
 
-    if (!friends) {
-      setTimeout(() => (this.friends = this.$store.state.friends), 2000);
-      return;
-    }
+      await FriendsModule.fetchFriends(studentID);
 
-    this.friends = this.$store.state.friends;
-  },
-
-  methods: {
-    openDialog() {
-      this.newFriendID = null;
-      this.dialog = true;
-    },
-
-    closeDialog() {
-      this.newFriendID = null;
-      this.dialog = false;
-    },
-
-    async addFriend() {
-      this.loading = true;
-
-      const { studentID } = this.$store.state.profile;
-      const URL = `${this.HOST_URL}/friends/${studentID}`;
-      const jwt = localStorage.getItem("jwt");
-
-      let friendID = this.newFriendID;
-      friendID = friendID.split("");
-      friendID.unshift("U");
-      friendID = friendID.join("");
-
-      try {
-        const { data } = await axios.post(
-          URL,
-          { friendID },
-          { headers: { "X-Auth": jwt } }
-        );
-
-        if (data.status) {
-          await this.$store.dispatch("fetchFriends", studentID);
-        }
-
-        setTimeout(() => {
-          this.friends = this.$store.state.friends;
-          this.loading = false;
-          this.closeDialog();
-        }, 500);
-      } catch (error) {
-        console.log("RJ: error", error);
-      }
-    },
-
-    async removeFriend(friendID) {
-      this.deletePending = true;
-
-      const { studentID } = this.$store.state.profile;
-
-      for (const friend of this.friendsList) {
-        if (friend.studentID === friendID) {
-          try {
-            const URL = `${this.HOST_URL}/friends/${studentID}`;
-            const jwt = localStorage.getItem("jwt");
-
-            const { data } = await axios.delete(URL, {
-              headers: { "X-Auth": jwt },
-              data: { friendID }
-            });
-
-            if (data.status) {
-              await this.$store.dispatch("fetchFriends", studentID);
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
-
-      this.friends = this.$store.state.friends;
-      this.deletePending = false;
-    },
-
-    friendsTimetable(friendID) {
-      this.$router.push({ name: "friends-timetable", params: { friendID } });
+      this.isLoading = false;
     }
   }
-};
+
+  openDialog() {
+    this.newFriendID = "";
+    this.dialogOpened = true;
+  }
+
+  closeDialog() {
+    this.newFriendID = "";
+    this.dialogOpened = false;
+  }
+
+  async removeFriend(friendID: string) {
+    this.isDeleting = true;
+
+    await FriendsModule.removeFriend(friendID);
+
+    this.isDeleting = false;
+  }
+
+  async addFriend() {
+    this.isAdding = true;
+
+    await FriendsModule.addFriend(this.newFriendID);
+
+    this.isAdding = false;
+    this.newFriendID = "";
+    this.dialogOpened = false;
+  }
+
+  friendsTimetable(friendID: string) {
+    this.$router.push({ name: "friends-timetable", params: { friendID } });
+  }
+}
 </script>
 
 <style lang="scss">

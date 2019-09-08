@@ -3,7 +3,7 @@ import App from "./App";
 import store from "../store";
 import router from "./router.js";
 
-Vue.prototype.HOST_URL = "http://localhost:3001";
+Vue.prototype.HOST_URL = "https://iutimetable-api.now.sh";
 
 /* eslint-disable no-new */
 new Vue({

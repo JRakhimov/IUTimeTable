@@ -7,8 +7,8 @@ import "./registerServiceWorker";
 Vue.prototype.HOST_URL = process.env.VUE_APP_HOST_URL;
 
 import Vuetify from "vuetify";
-import "material-design-icons-iconfont/dist/material-design-icons.css";
 import "vuetify/dist/vuetify.min.css";
+import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 Vue.use(Vuetify, { iconfont: "md" });
 
@@ -21,7 +21,8 @@ Vue.component("login-layout", Login);
 Vue.config.productionTip = false;
 
 new Vue({
-  router,
   store,
-  render: h => h(App)
+  router,
+  render: h => h(App),
+  vuetify: new Vuetify({})
 }).$mount("#app");

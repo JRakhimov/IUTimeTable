@@ -6,15 +6,7 @@
       :key="index"
       :height="70"
     >
-      <rect
-        v-if="index === 0"
-        x="0"
-        y="0"
-        rx="4"
-        ry="4"
-        width="70"
-        height="8"
-      />
+      <rect v-if="index === 0" x="0" y="0" rx="4" ry="4" width="70" height="8" />
 
       <circle cx="30" cy="45" r="25" />
       <rect x="70" y="25" rx="4" ry="4" width="120" height="13" />
@@ -33,24 +25,18 @@
   </v-layout>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
 import VueContentLoading from "vue-content-loading";
 
-export default {
-  name: "GroupmatesSkeleton",
-
-  components: {
-    VueContentLoading
-  },
-
-  computed: {
-    skeletonsAmount() {
-      return Math.floor(window.innerHeight / 70) - 2;
-    },
-
-    skeletonWidth() {
-      return Math.floor(window.innerWidth * 0.8);
-    }
+@Component({ components: { VueContentLoading } })
+export default class GroupmatesSkeleton extends Vue {
+  get skeletonsAmount() {
+    return Math.floor(window.innerHeight / 70) - 2;
   }
-};
+
+  get skeletonWidth() {
+    return Math.floor(window.innerWidth * 0.8);
+  }
+}
 </script>
