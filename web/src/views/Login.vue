@@ -69,6 +69,7 @@
 import { Component, Mixins } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 import axios from "axios";
+import md5 from "md5";
 
 import VueOfflineMixin from "../mixins/vueOffline";
 import { ProfileModule } from "../store";
@@ -119,9 +120,17 @@ export default class DefaultLayout extends Mixins(VueOfflineMixin) {
     const URL = `${process.env.VUE_APP_HOST_URL}/auth/eclass`;
 
     try {
-      const { data }: { data: AuthResponse } = await axios.post(URL, {
+      const body = {
         ...this.formData,
         studentID
+      };
+
+      const jAuth = md5(
+        `${JSON.stringify(body)}${process.env.VUE_APP_STUDENT_SALT}`
+      );
+
+      const { data }: { data: AuthResponse } = await axios.post(URL, body, {
+        headers: { "J-Auth": jAuth }
       });
 
       if (data.status && data.jwt && data.student) {
