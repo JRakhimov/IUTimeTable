@@ -61,8 +61,11 @@ type GroupmatesDivider = { divider: boolean; inset: boolean };
 
 @Component({ components: { GroupmatesSkeleton } })
 export default class Groupmates extends Mixins(UtilsMixin, VueOfflineMixin) {
-  private groupmates: ExtendedStudent[] = [];
   private updating = false;
+
+  get groupmates() {
+    return GroupmatesModule.getGroupmates;
+  }
 
   get groupmatesList() {
     const tmpGroupmates: Array<
@@ -86,10 +89,7 @@ export default class Groupmates extends Mixins(UtilsMixin, VueOfflineMixin) {
     const { groupName } = ProfileModule.getProfile;
     await GroupmatesModule.fetchGroupmates(groupName);
 
-    setTimeout(() => {
-      this.groupmates = GroupmatesModule.getGroupmates;
-      this.updating = false;
-    }, 2000);
+    this.updating = false;
   }
 
   async mounted() {
@@ -101,15 +101,8 @@ export default class Groupmates extends Mixins(UtilsMixin, VueOfflineMixin) {
 
       await GroupmatesModule.fetchGroupmates(groupName);
 
-      setTimeout(() => {
-        this.groupmates = GroupmatesModule.getGroupmates;
-        this.updating = false;
-      }, 2000);
-
-      return;
+      this.updating = false;
     }
-
-    this.groupmates = groupmates;
   }
 }
 </script>

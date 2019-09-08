@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { Student, ExtendedStudent, TimeTable } from "../types";
 import UtilsMixin from "../mixins/utils";
-import store from "@/store";
+import store, { ProfileModule } from "@/store";
 
 type FriendsResponse = {
   status: boolean;
@@ -51,64 +51,53 @@ export default class Friends extends VuexModule {
     return [];
   }
 
-  //   async addFriend() {
-  //     this.isLoading = true;
+  @Action({ rawError: true })
+  async addFriend(friendID: string) {
+    const { studentID } = ProfileModule.getProfile;
+    const HOST_URL = process.env.VUE_APP_HOST_URL;
+    const URL = `${HOST_URL}/friends/${studentID}`;
+    const jwt = localStorage.getItem("jwt");
 
-  //     const { studentID } = this.$store.state.profile;
-  //     const URL = `${this.HOST_URL}/friends/${studentID}`;
-  //     const jwt = localStorage.getItem("jwt");
+    let splitterFriendID = friendID.split("");
+    splitterFriendID.unshift("U");
+    friendID = splitterFriendID.join("");
 
-  //     let friendID = this.newFriendID;
-  //     friendID = friendID.split("");
-  //     friendID.unshift("U");
-  //     friendID = friendID.join("");
+    try {
+      const { data } = await axios.post(URL, { friendID }, { headers: { "X-Auth": jwt } });
 
-  //     try {
-  //       const { data } = await axios.post(
-  //         URL,
-  //         { friendID },
-  //         { headers: { "X-Auth": jwt } }
-  //       );
+      if (data.status) {
+        this.context.dispatch("fetchFriends", studentID);
+      }
+    } catch (error) {
+      // tslint:disable-next-line:no-console
+      console.log(error);
+    }
+  }
 
-  //       if (data.status) {
-  //         await this.$store.dispatch("fetchFriends", studentID);
-  //       }
+  @Action({ rawError: true })
+  async removeFriend(friendID: string) {
+    const { studentID } = ProfileModule.getProfile;
 
-  //       setTimeout(() => {
-  //         this.friends = this.$store.state.friends;
-  //         this.loading = false;
-  //         this.closeDialog();
-  //       }, 500);
-  //     } catch (error) {
-  //       console.log("RJ: error", error);
-  //     }
-  //   }
-  // async removeFriend(friendID) {
-  //     this.deletePending = true;
+    for (const friend of this.getFriends) {
+      if (friend.studentID === friendID) {
+        try {
+          const HOST_URL = process.env.VUE_APP_HOST_URL;
+          const URL = `${HOST_URL}/friends/${studentID}`;
+          const jwt = localStorage.getItem("jwt");
 
-  //     const { studentID } = this.$store.state.profile;
+          const { data } = await axios.delete(URL, {
+            headers: { "X-Auth": jwt },
+            data: { friendID }
+          });
 
-  //     for (const friend of this.friendsList) {
-  //       if (friend.studentID === friendID) {
-  //         try {
-  //           const URL = `${this.HOST_URL}/friends/${studentID}`;
-  //           const jwt = localStorage.getItem("jwt");
-
-  //           const { data } = await axios.delete(URL, {
-  //             headers: { "X-Auth": jwt },
-  //             data: { friendID }
-  //           });
-
-  //           if (data.status) {
-  //             await this.$store.dispatch("fetchFriends", studentID);
-  //           }
-  //         } catch (error) {
-  //           console.error(error);
-  //         }
-  //       }
-  //     }
-
-  //     this.friends = this.$store.state.friends;
-  //     this.deletePending = false;
-  //   }
+          if (data.status) {
+            this.context.dispatch("fetchFriends", studentID);
+          }
+        } catch (error) {
+          // tslint:disable-next-line:no-console
+          console.error(error);
+        }
+      }
+    }
+  }
 }

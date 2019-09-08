@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <v-dialog v-model="dialog" max-width="600px">
+    <v-dialog v-model="dialogOpened" max-width="600px">
       <v-card>
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="isInputValid">
           <v-card-title>
             <span class="headline">Add friend</span>
           </v-card-title>
@@ -14,7 +14,7 @@
                   <v-text-field
                     prepend-icon="account_circle"
                     label="Friend's StudentID"
-                    :rules="studentIDRules"
+                    :rules="inputRules"
                     v-model="newFriendID"
                     name="StudentID"
                     :color="color"
@@ -31,14 +31,14 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :color="color" @click="closeDialog" flat>Close</v-btn>
+            <v-btn :color="color" @click="closeDialog" text>Close</v-btn>
             <v-btn
+              text
               type="submit"
               :color="color"
               @click.prevent="addFriend"
-              :loading="loading"
-              :disabled="!valid"
-              flat
+              :loading="isAdding"
+              :disabled="!isInputValid"
             >Add</v-btn>
           </v-card-actions>
         </v-form>
@@ -46,9 +46,9 @@
     </v-dialog>
 
     <v-layout justify-center>
-      <FriendsSkeleton v-if="!friends" />
+      <FriendsSkeleton v-if="isLoading" />
 
-      <v-flex v-if="friends" md6>
+      <v-flex v-if="!isLoading" md6>
         <v-card>
           <v-list class="pr-3" two-line>
             <template v-for="(friend, index) in friendsList">
@@ -84,12 +84,7 @@
             </template>
           </v-list>
 
-          <v-progress-linear
-            :indeterminate="true"
-            :active="deletePending"
-            :color="color"
-            height="5"
-          ></v-progress-linear>
+          <v-progress-linear :indeterminate="true" :active="isDeleting" :color="color" height="5"></v-progress-linear>
         </v-card>
       </v-flex>
     </v-layout>
@@ -126,17 +121,24 @@ type FriendsDivider = { divider: boolean; inset: boolean };
 
 @Component({ components: { FriendsSkeleton } })
 export default class Friends extends Mixins(UtilsMixin, VueOfflineMixin) {
-  private friends: ExtendedStudent[] = [];
-  private deletePending = false;
   private dialogOpened = false;
   private isInputValid = true;
-  private isLoading = false;
   private newFriendID = "";
   private inputRules = [
     (v: string) =>
       (v || "").length === 7 || `StudentID should containt 7 characters.`,
-    (v: string) => !isNaN(Number(v || "")) || "Only numbers are allowed."
+    (v: string) =>
+      `U${v}` !== ProfileModule.getProfile.studentID ||
+      "You cannot add yourself."
   ];
+
+  private isDeleting = false;
+  private isLoading = false;
+  private isAdding = false;
+
+  get friends() {
+    return FriendsModule.getFriends;
+  }
 
   get friendsList() {
     const header = `You have ${this.friends.length} ${
@@ -167,15 +169,8 @@ export default class Friends extends Mixins(UtilsMixin, VueOfflineMixin) {
 
       await FriendsModule.fetchFriends(studentID);
 
-      setTimeout(() => {
-        this.friends = FriendsModule.getFriends;
-        this.isLoading = false;
-      }, 2000);
-
-      return;
+      this.isLoading = false;
     }
-
-    this.friends = friends;
   }
 
   openDialog() {
@@ -184,6 +179,24 @@ export default class Friends extends Mixins(UtilsMixin, VueOfflineMixin) {
   }
 
   closeDialog() {
+    this.newFriendID = "";
+    this.dialogOpened = false;
+  }
+
+  async removeFriend(friendID: string) {
+    this.isDeleting = true;
+
+    await FriendsModule.removeFriend(friendID);
+
+    this.isDeleting = false;
+  }
+
+  async addFriend() {
+    this.isAdding = true;
+
+    await FriendsModule.addFriend(this.newFriendID);
+
+    this.isAdding = false;
     this.newFriendID = "";
     this.dialogOpened = false;
   }
