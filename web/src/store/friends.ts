@@ -14,6 +14,10 @@ type FriendsResponse = {
 export default class Friends extends VuexModule {
   public friends: ExtendedStudent[] = [];
 
+  get getFriends() {
+    return this.friends;
+  }
+
   get friendsTimetable() {
     return (friendID: string): TimeTable | {} => {
       const friend = this.friends.find(friend => friend.studentID === friendID);
@@ -46,4 +50,65 @@ export default class Friends extends VuexModule {
 
     return [];
   }
+
+  //   async addFriend() {
+  //     this.isLoading = true;
+
+  //     const { studentID } = this.$store.state.profile;
+  //     const URL = `${this.HOST_URL}/friends/${studentID}`;
+  //     const jwt = localStorage.getItem("jwt");
+
+  //     let friendID = this.newFriendID;
+  //     friendID = friendID.split("");
+  //     friendID.unshift("U");
+  //     friendID = friendID.join("");
+
+  //     try {
+  //       const { data } = await axios.post(
+  //         URL,
+  //         { friendID },
+  //         { headers: { "X-Auth": jwt } }
+  //       );
+
+  //       if (data.status) {
+  //         await this.$store.dispatch("fetchFriends", studentID);
+  //       }
+
+  //       setTimeout(() => {
+  //         this.friends = this.$store.state.friends;
+  //         this.loading = false;
+  //         this.closeDialog();
+  //       }, 500);
+  //     } catch (error) {
+  //       console.log("RJ: error", error);
+  //     }
+  //   }
+  // async removeFriend(friendID) {
+  //     this.deletePending = true;
+
+  //     const { studentID } = this.$store.state.profile;
+
+  //     for (const friend of this.friendsList) {
+  //       if (friend.studentID === friendID) {
+  //         try {
+  //           const URL = `${this.HOST_URL}/friends/${studentID}`;
+  //           const jwt = localStorage.getItem("jwt");
+
+  //           const { data } = await axios.delete(URL, {
+  //             headers: { "X-Auth": jwt },
+  //             data: { friendID }
+  //           });
+
+  //           if (data.status) {
+  //             await this.$store.dispatch("fetchFriends", studentID);
+  //           }
+  //         } catch (error) {
+  //           console.error(error);
+  //         }
+  //       }
+  //     }
+
+  //     this.friends = this.$store.state.friends;
+  //     this.deletePending = false;
+  //   }
 }

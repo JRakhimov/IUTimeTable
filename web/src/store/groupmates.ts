@@ -20,7 +20,6 @@ export default class Groupmates extends VuexModule {
 
   @Mutation
   setGroupmates(groupmates: Student[]) {
-    console.log("this :", this);
     this.groupmates = groupmates.map(groupmate => UtilsMixin.updateStudentData(groupmate));
   }
 

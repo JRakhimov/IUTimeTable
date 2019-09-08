@@ -73,7 +73,6 @@ export default class Groupmates extends Mixins(UtilsMixin, VueOfflineMixin) {
       tmpGroupmates.push(groupmate);
 
       if (this.groupmates.length !== index + 1) {
-        3;
         tmpGroupmates.push({ divider: true, inset: true });
       }
     });
@@ -97,9 +96,7 @@ export default class Groupmates extends Mixins(UtilsMixin, VueOfflineMixin) {
     const { groupName } = ProfileModule.getProfile;
     let groupmates = GroupmatesModule.getGroupmates;
 
-    console.log("GroupmatesModule :", GroupmatesModule);
-
-    if (groupName && (groupmates == null || !groupmates.length)) {
+    if (groupName && !groupmates.length) {
       this.updating = true;
 
       await GroupmatesModule.fetchGroupmates(groupName);
