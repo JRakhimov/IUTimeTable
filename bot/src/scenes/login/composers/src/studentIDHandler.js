@@ -23,11 +23,11 @@ studentIDHandler.hears(/U\d\d\d\d\d\d\d/gi, async (ctx) => {
 });
 
 studentIDHandler.on("text", (ctx) => {
-  ctx.methods.reply(ctx, "Make sure that you sent your id in this form: U*******");
+  ctx.methods.directReply(ctx, "Make sure that you sent your id in this form: U*******");
 });
 
 studentIDHandler.on("message", (ctx) => {
-  ctx.methods.reply(ctx, "Make sure that you sent a text!");
+  ctx.methods.directReply(ctx, "Make sure that you sent a text!");
 });
 
 export { studentIDHandler };

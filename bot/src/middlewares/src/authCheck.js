@@ -6,7 +6,7 @@ export const authCheck = async (ctx, next) => {
   const isCallbackQuery = ctx.updateType === "callback_query";
 
   if (!isCallbackQuery) {
-    const isExceptionText = ctx.message.text === "/start" || ctx.message.text === "🎫 Log In";
+    const isExceptionText = ctx.message.text === "👥 Developers" || ctx.message.text === "🎫 Log In";
 
     if (isExceptionText) {
       return next();

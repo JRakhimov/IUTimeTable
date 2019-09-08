@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { firebase, Logger } from "../../utils";
 
-const formGroupForDepartment = (students) => {
+const formGroupForDepartment = students => {
   const depStudents = Object.values(students);
   const depGroups = {};
 
@@ -100,7 +100,7 @@ export const getGroupStudents = async (req, res) => {
   if (group) {
     res.status(200).json({
       status: true,
-      students: Object.values(group)
+      group: Object.values(group)
     });
   } else {
     res.status(200).json({

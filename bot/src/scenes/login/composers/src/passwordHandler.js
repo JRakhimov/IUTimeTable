@@ -20,7 +20,7 @@ passwordHandler.on("text", (ctx) => {
 });
 
 passwordHandler.on("message", (ctx) => {
-  ctx.methods.reply(ctx, "Make sure that you sent a text!");
+  ctx.methods.directReply(ctx, "Make sure that you sent a text!");
 });
 
 export { passwordHandler };

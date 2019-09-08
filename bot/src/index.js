@@ -1,3 +1,4 @@
+import Express from "express";
 import Telegraf from "telegraf";
 import rateLimit from "telegraf-ratelimit";
 import firebaseSession from "telegraf-session-firebase";
@@ -21,8 +22,11 @@ import {
 
 import { timeTableCbHandler } from "./routes";
 
-const bot = new Telegraf(config.token, config.botOptions);
+const app = Express();
 const log = Logger("Bot:Main");
+const bot = new Telegraf(config.token, config.botOptions);
+
+// bot.drop((ctx) => true);
 
 bot.context.constants = constants;
 bot.context.formaters = formaters;
@@ -41,10 +45,23 @@ bot.hears("😿 Log Out", logOutHandler);
 bot.hears("🤓 Profile", profileHandler);
 bot.hears("📅 TimeTable", timeTableHandler);
 bot.hears("👥 Developers", developersHandler);
+bot.hears([ "📬 Subscribe", "👨‍👩‍👧‍👦 My Friends" ], (ctx) => ctx.reply("We are working on it. Stay with us ☺️"));
 
 bot.on("callback_query", timeTableCbHandler);
 
 bot.use(startHandler);
 
-bot.startPolling();
-log.info(".::Bot Started::.");
+if (process.env.IS_NOW === "true") {
+  bot.telegram.setWebhook(`https://iutimetable-bot.now.sh/${config.token}`);
+  app.use(bot.webhookCallback(`/${config.token}`));
+
+  log.info(".::Bot launched via Webhooks::.\n");
+} else if (process.env.IS_NOW === "false") {
+  bot.telegram.deleteWebhook();
+  bot.startPolling();
+
+  log.info(".::Bot launched via Polling::.\n");
+}
+
+app.get("/", (_req, res) => res.sendStatus(200));
+app.listen(3000, () => log.info(".::WebHook Server Started::.\n"));
