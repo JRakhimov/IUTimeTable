@@ -71,11 +71,8 @@ import { getModule } from "vuex-module-decorators";
 import axios from "axios";
 
 import VueOfflineMixin from "../mixins/vueOffline";
-import ProfileModule from "../store/profile";
+import { ProfileModule } from "../store";
 import { Student } from "../types";
-import store from "../store";
-
-const Profile = getModule(ProfileModule, store);
 
 type AuthResponse = {
   status: boolean;
@@ -129,7 +126,7 @@ export default class DefaultLayout extends Mixins(VueOfflineMixin) {
 
       if (data.status && data.jwt && data.student) {
         localStorage.setItem("jwt", data.jwt);
-        await Profile.setProfile(data.student);
+        await ProfileModule.setProfile(data.student);
 
         this.$router.replace({ name: "timetable" });
       } else {

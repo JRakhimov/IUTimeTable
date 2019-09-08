@@ -3,15 +3,16 @@ import axios from "axios";
 
 import { Student, ExtendedStudent } from "../types";
 import UtilsMixin from "../mixins/utils";
+import store from "@/store";
 
 type GroupmatesResponse = {
   status: boolean;
-  students: Student[];
+  group: Student[];
 };
 
-@Module({ name: "Groupmates" })
+@Module({ name: "Groupmates", store })
 export default class Groupmates extends VuexModule {
-  groupmates: ExtendedStudent[] = [];
+  public groupmates: ExtendedStudent[] = [];
 
   get getGroupmates() {
     return this.groupmates;
@@ -19,6 +20,7 @@ export default class Groupmates extends VuexModule {
 
   @Mutation
   setGroupmates(groupmates: Student[]) {
+    console.log("this :", this);
     this.groupmates = groupmates.map(groupmate => UtilsMixin.updateStudentData(groupmate));
   }
 
@@ -27,7 +29,7 @@ export default class Groupmates extends VuexModule {
     this.groupmates = [];
   }
 
-  @Action({ commit: "setGroupmates" })
+  @Action({ commit: "setGroupmates", rawError: true })
   async fetchGroupmates(groupName: string): Promise<Student[]> {
     const HOST_URL = process.env.VUE_APP_HOST_URL;
     const URL = `${HOST_URL}/groups/${groupName}`;
@@ -36,7 +38,7 @@ export default class Groupmates extends VuexModule {
     const { data }: { data: GroupmatesResponse } = await axios.get(URL, { headers: { "X-Auth": jwt } });
 
     if (data.status) {
-      return data.students;
+      return data.group;
     }
 
     return [];

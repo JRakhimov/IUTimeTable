@@ -54,18 +54,13 @@
 import { Component, Mixins, Watch } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 
+import { ProfileModule, FriendsModule } from "../store";
 import VueOfflineMixin from "../mixins/vueOffline";
 import { Student, TimeTable } from "../types";
-import ProfileModule from "../store/profile";
-import FriendsModule from "../store/friends";
 import UtilsMixin from "../mixins/utils";
-import store from "../store";
 
-import LessonView from "../components/LessonView.vue";
 import TimetableSkeleton from "../components/skeletons/TimetableSkeleton.vue";
-
-const Friends = getModule(FriendsModule, store);
-const Profile = getModule(ProfileModule, store);
+import LessonView from "../components/LessonView.vue";
 
 type Tab = {
   name: string;
@@ -105,13 +100,13 @@ export default class Timetable extends Mixins(UtilsMixin, VueOfflineMixin) {
 
   get timetable(): Timetable | {} {
     if (this.$route.name === "timetable") {
-      return Profile.getProfileTimetable;
+      return ProfileModule.getProfileTimetable;
     }
 
     if (this.$route.name === "friends-timetable") {
       const { friendID } = this.$route.params;
 
-      return Friends.friendsTimetable(friendID);
+      return FriendsModule.friendsTimetable(friendID);
     }
 
     return {};
@@ -139,10 +134,10 @@ export default class Timetable extends Mixins(UtilsMixin, VueOfflineMixin) {
   }
 
   async updateTimetable() {
-    Profile.clearTimetable();
+    ProfileModule.clearTimetable();
 
     setTimeout(() => {
-      Profile.fetchTimetable(Profile.getProfile.groupName);
+      ProfileModule.fetchTimetable(ProfileModule.getProfile.groupName);
     }, 2000);
   }
 }

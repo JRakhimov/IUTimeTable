@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { Student, ExtendedStudent, Stage, TimeTable } from "../types";
 import UtilsMixin from "../mixins/utils";
+import store from "@/store";
 
 type ProfileResponse = {
   status: boolean;
@@ -25,7 +26,7 @@ const emptyProfile: ExtendedStudent = {
   color: ""
 };
 
-@Module({ name: "Profile" })
+@Module({ name: "Profile", store })
 export default class Profile extends VuexModule {
   public profile: ExtendedStudent = emptyProfile;
 

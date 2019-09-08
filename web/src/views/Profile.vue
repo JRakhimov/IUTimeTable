@@ -88,28 +88,21 @@
 import { Component, Mixins } from "vue-property-decorator";
 import { getModule } from "vuex-module-decorators";
 
+import { ProfileModule, GroupmatesModule, FriendsModule } from "../store";
 import VueOfflineMixin from "../mixins/vueOffline";
-import GroupmatesModule from "../store/groupmates";
-import ProfileModule from "../store/profile";
-import FriendsModule from "../store/friends";
 import UtilsMixin from "../mixins/utils";
 import { Student } from "../types";
-import store from "../store";
 
 import ProfileSkeleton from "../components/skeletons/ProfileSkeleton.vue";
-
-const Groupmates = getModule(GroupmatesModule, store);
-const Profile = getModule(ProfileModule, store);
-const Friends = getModule(FriendsModule, store);
 
 @Component({ components: { ProfileSkeleton } })
 export default class ProfileView extends Mixins(UtilsMixin, VueOfflineMixin) {
   get profile() {
-    return Profile.getProfile;
+    return ProfileModule.getProfile;
   }
 
   get isLoaded() {
-    return Profile.getProfile.fullName.length;
+    return ProfileModule.getProfile.fullName.length;
   }
 
   get profileTopStyle() {
@@ -132,9 +125,9 @@ export default class ProfileView extends Mixins(UtilsMixin, VueOfflineMixin) {
     localStorage.removeItem("jwt");
     this.$router.replace({ name: "login" });
 
-    await Profile.clearProfile();
-    await Friends.clearFriends();
-    await Groupmates.clearGroupmates();
+    await ProfileModule.clearProfile();
+    await FriendsModule.clearFriends();
+    await GroupmatesModule.clearGroupmates();
   }
 }
 </script>

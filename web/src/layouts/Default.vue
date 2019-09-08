@@ -5,7 +5,7 @@
         <v-toolbar :color="color" dark>
           <v-toolbar-title class="unselectable">IUTimeTable</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn text icon color="white">
+          <v-btn icon color="white">
             <v-icon>help</v-icon>
           </v-btn>
         </v-toolbar>

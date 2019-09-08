@@ -3,15 +3,16 @@ import axios from "axios";
 
 import { Student, ExtendedStudent, TimeTable } from "../types";
 import UtilsMixin from "../mixins/utils";
+import store from "@/store";
 
 type FriendsResponse = {
   status: boolean;
   friends?: Student[];
 };
 
-@Module({ name: "Friends" })
+@Module({ name: "Friends", store })
 export default class Friends extends VuexModule {
-  friends: ExtendedStudent[] = [];
+  public friends: ExtendedStudent[] = [];
 
   get friendsTimetable() {
     return (friendID: string): TimeTable | {} => {

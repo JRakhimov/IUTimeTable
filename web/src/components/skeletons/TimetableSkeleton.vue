@@ -2,10 +2,10 @@
   <v-layout column>
     <vue-content-loading
       v-for="(x, index) in skeletonsAmount"
-      style="height: 140px;"
+      style="height: 150px;"
       :class="{ 'mt-3': index !== 0}"
       :key="index"
-      :height="140"
+      :height="150"
     >
       <rect x="15" y="0" rx="10" ry="10" width="100" height="60" />
 
@@ -27,7 +27,7 @@ import VueContentLoading from "vue-content-loading";
 @Component({ components: { VueContentLoading } })
 export default class TimetableSkeleton extends Vue {
   get skeletonsAmount() {
-    return Math.floor(window.innerHeight / 150);
+    return Math.floor(window.innerHeight / 150) - 1;
   }
 }
 </script>

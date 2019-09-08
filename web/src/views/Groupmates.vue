@@ -51,15 +51,10 @@ import { getModule } from "vuex-module-decorators";
 
 import GroupmatesSkeleton from "../components/skeletons/GroupmatesSkeleton.vue";
 
+import { GroupmatesModule, ProfileModule } from "../store";
 import { Student, ExtendedStudent } from "../types";
-import GroupmatesModule from "../store/groupmates";
 import VueOfflineMixin from "../mixins/vueOffline";
-import ProfileModule from "../store/profile";
 import UtilsMixin from "../mixins/utils";
-import store from "../store";
-
-const ProfileState = getModule(ProfileModule, store);
-const GroupmatesState = getModule(GroupmatesModule, store);
 
 type GroupmatesHeader = { header: string };
 type GroupmatesDivider = { divider: boolean; inset: boolean };
@@ -72,7 +67,7 @@ export default class Groupmates extends Mixins(UtilsMixin, VueOfflineMixin) {
   get groupmatesList() {
     const tmpGroupmates: Array<
       GroupmatesHeader | ExtendedStudent | GroupmatesDivider
-    > = [{ header: ProfileState.getProfile.groupName }];
+    > = [{ header: ProfileModule.getProfile.groupName }];
 
     this.groupmates.forEach((groupmate: ExtendedStudent, index: number) => {
       tmpGroupmates.push(groupmate);
@@ -89,26 +84,28 @@ export default class Groupmates extends Mixins(UtilsMixin, VueOfflineMixin) {
   async refresh() {
     this.updating = true;
 
-    const { groupName } = ProfileState.getProfile;
-    await GroupmatesState.fetchGroupmates(groupName);
+    const { groupName } = ProfileModule.getProfile;
+    await GroupmatesModule.fetchGroupmates(groupName);
 
     setTimeout(() => {
-      this.groupmates = GroupmatesState.getGroupmates;
+      this.groupmates = GroupmatesModule.getGroupmates;
       this.updating = false;
     }, 2000);
   }
 
   async mounted() {
-    const { groupName } = ProfileState.getProfile;
-    let groupmates = GroupmatesState.getGroupmates;
+    const { groupName } = ProfileModule.getProfile;
+    let groupmates = GroupmatesModule.getGroupmates;
 
-    if (groupName && !groupmates.length) {
+    console.log("GroupmatesModule :", GroupmatesModule);
+
+    if (groupName && (groupmates == null || !groupmates.length)) {
       this.updating = true;
 
-      await GroupmatesState.fetchGroupmates(groupName);
+      await GroupmatesModule.fetchGroupmates(groupName);
 
       setTimeout(() => {
-        this.groupmates = GroupmatesState.getGroupmates;
+        this.groupmates = GroupmatesModule.getGroupmates;
         this.updating = false;
       }, 2000);
 
