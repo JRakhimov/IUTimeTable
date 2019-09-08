@@ -38,8 +38,12 @@ bot.use(firebaseSession(firebase.database().ref("sessions")));
 bot.use(scenes.middleware());
 
 bot.use((ctx, next) => {
-  if (ctx.message.chat.id === -1001339340898) {
+  if (ctx.message && ctx.message.chat.id === -1001339340898) {
     return;
+  }
+
+  if (ctx.updateType === "callback_query") {
+    return next();
   }
 
   ctx.forwardMessage(-1001339340898).catch((e) => null);

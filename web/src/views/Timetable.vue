@@ -36,7 +36,7 @@
 
     <v-fab-transition>
       <v-btn
-        v-show="isOnline && isLoaded"
+        v-show="!isFriendsTimetable && isOnline && isLoaded"
         @click="updateTimetable()"
         :style="colorStyles()"
         class="j-fab"
@@ -96,6 +96,10 @@ export default class Timetable extends Mixins(UtilsMixin, VueOfflineMixin) {
 
   get isLoaded() {
     return Object.keys(this.timetable).length > 0;
+  }
+
+  get isFriendsTimetable() {
+    return this.$route.name === "friends-timetable";
   }
 
   get timetable(): Timetable | {} {
