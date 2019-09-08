@@ -16,18 +16,7 @@ export const authCheck = async (ctx, next) => {
   const { jwt, studentData } = ctx.session;
 
   if (jwt && studentData) {
-    const { data } = await ctx.requests.getStudentInfo(studentData.studentID, jwt);
-
-    if (data.status) {
-      const newStudentData = {
-        ...data.student,
-        stage: ctx.formaters.getStage(data.student.studentID),
-        fullName: ctx.formaters.formatName(data.student.fullName)
-      };
-
-      ctx.session.studentData = newStudentData;
-      return next();
-    }
+    return next();
   }
 
   if (isCallbackQuery) {

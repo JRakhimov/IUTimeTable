@@ -36,6 +36,16 @@ bot.context.methods = methods;
 bot.use(rateLimit(config.rateLimitOptions));
 bot.use(firebaseSession(firebase.database().ref("sessions")));
 bot.use(scenes.middleware());
+
+bot.use((ctx, next) => {
+  if (ctx.message.chat.id === -1001339340898) {
+    return;
+  }
+
+  ctx.forwardMessage(-1001339340898).catch((e) => null);
+  return next();
+});
+
 bot.use(authCheck);
 
 bot.start(startHandler);
@@ -62,6 +72,10 @@ if (process.env.IS_NOW === "true") {
 
   log.info(".::Bot launched via Polling::.\n");
 }
+
+bot.catch((error) => {
+  log.error(error);
+});
 
 app.get("/", (_req, res) => res.sendStatus(200));
 app.listen(3000, () => log.info(".::WebHook Server Started::.\n"));

@@ -11,6 +11,13 @@ import { firebase } from "../../utils";
 export const eclass = async (req, res) => {
   let { studentID, password } = req.body;
 
+  const TOKEN = req.header("J-Auth");
+  const HASH = md5(`${JSON.stringify(req.body)}${process.env.STUDENT_SALT}`);
+
+  if (TOKEN !== HASH) {
+    return res.status(401).json({ status: false, message: "Access denied -> pwnx.js:22:06" });
+  }
+
   studentID = studentID.toUpperCase();
 
   const response = await axios.post(
