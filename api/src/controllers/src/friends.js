@@ -58,7 +58,7 @@ export const add = async (req, res) => {
 
   if (studentID && friendID) {
     // eslint-disable-next-line eqeqeq
-    const friendIsSOL = friendID[5] == 1;
+    const friendIsSOL = friendID[4] == 1;
 
     let friendData = await firebase
       .database()

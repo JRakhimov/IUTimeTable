@@ -11,19 +11,19 @@ export const get = async (req, res) => {
 
   if (studentID) {
     // eslint-disable-next-line eqeqeq
-    const isSOL = studentID[5] == 1;
+    const isSOL = studentID[4] == 1;
 
     const student = await firebase
       .database()
       .ref(`students/${isSOL ? "SOL" : "SOCIE"}/${studentID}`)
       .once("value")
-      .then((x) => x.val());
+      .then(x => x.val());
 
     const timetable = await firebase
       .database()
       .ref(`timetables/${student.groupName}`)
       .once("value")
-      .then((x) => x.val());
+      .then(x => x.val());
 
     if (student) {
       res.status(200).json({ status: true, student: { ...student, timetable } });
@@ -53,7 +53,7 @@ export const add = async (req, res) => {
 
   if (studentID && groupName && fullName) {
     // eslint-disable-next-line eqeqeq
-    const isSOL = studentID[5] == 1;
+    const isSOL = studentID[4] == 1;
 
     await firebase
       .database()
@@ -81,7 +81,7 @@ export const remove = async (req, res) => {
   const logger = Logger("RemoveSingleStudent");
 
   // eslint-disable-next-line eqeqeq
-  const isSOL = studentID[5] == 1;
+  const isSOL = studentID[4] == 1;
 
   await firebase
     .database()

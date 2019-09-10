@@ -66,7 +66,7 @@ export default class Friends extends VuexModule {
       const { data } = await axios.post(URL, { friendID }, { headers: { "X-Auth": jwt } });
 
       if (data.status) {
-        this.context.dispatch("fetchFriends", studentID);
+        await this.context.dispatch("fetchFriends", studentID);
       }
     } catch (error) {
       // tslint:disable-next-line:no-console
@@ -91,7 +91,7 @@ export default class Friends extends VuexModule {
           });
 
           if (data.status) {
-            this.context.dispatch("fetchFriends", studentID);
+            await this.context.dispatch("fetchFriends", studentID);
           }
         } catch (error) {
           // tslint:disable-next-line:no-console

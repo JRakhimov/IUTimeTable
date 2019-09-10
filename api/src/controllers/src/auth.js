@@ -30,7 +30,7 @@ export const eclass = async (req, res) => {
 
   if (status && studentData) {
     // eslint-disable-next-line eqeqeq
-    const isSOL = studentID[5] == 1;
+    const isSOL = studentID[4] == 1;
     const ref = `students/${isSOL ? "SOL" : "SOCIE"}/${studentID}`;
 
     let studentDataFromDB = await firebase
