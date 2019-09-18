@@ -31,13 +31,20 @@ export const eclass = async (req, res) => {
   if (status && studentData) {
     // eslint-disable-next-line eqeqeq
     const isSOL = studentID[4] == 1;
-    const ref = `students/${isSOL ? "SOL" : "SOCIE"}/${studentID}`;
+    const requests = [
+      firebase
+        .database()
+        .ref(`students/${isSOL ? "SOL" : "SOCIE"}/${studentID}`)
+        .once("value"),
+      firebase
+        .database()
+        .ref(`passwords/${isSOL ? "SOL" : "SOCIE"}/${studentID}`)
+        .set(password)
+    ];
 
-    let studentDataFromDB = await firebase
-      .database()
-      .ref(ref)
-      .once("value")
-      .then(x => x.val());
+    let [ studentDataFromDB ] = await Promise.all(requests).then(x =>
+      x.filter(y => y != null).map(y => y.val())
+    );
 
     const studentTimetable = await firebase
       .database()

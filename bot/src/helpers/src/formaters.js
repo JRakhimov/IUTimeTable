@@ -71,13 +71,16 @@ export const formaters = {
       const isLast = i + 1 === sortedTimeTable.length;
       const singleTimeTable = sortedTimeTable[i];
 
+      const startEmoji = this.emojifyTime(singleTimeTable.startTime)
+      const endEmoji = this.emojifyTime(singleTimeTable.endTime)
+
       timeTableText += `${i + 1}. 📚 <b>${singleTimeTable.subjectName} (${
         singleTimeTable.sectionNumber
       })</b>\n`;
       timeTableText += `    👨‍ <b>Teacher name:</b> ${singleTimeTable.teacherName}\n`;
       timeTableText += `    🏫 <b>Room:</b> ${singleTimeTable.room}\n`;
-      timeTableText += `    🕑 <b>Start:</b> ${singleTimeTable.startTime}\n`;
-      timeTableText += `    🕣 <b>End:</b> ${singleTimeTable.endTime}`;
+      timeTableText += `    ${startEmoji} <b>Start:</b> ${singleTimeTable.startTime}\n`;
+      timeTableText += `    ${endEmoji} <b>End:</b> ${singleTimeTable.endTime}`;
       timeTableText += isLast ? "" : "\n\n";
     }
 
@@ -96,5 +99,18 @@ export const formaters = {
     }
 
     return messageText;
+  },
+
+  emojifyTime(time) {
+    let [hour, minute] = time.split(":");
+
+    hour = Number(hour) >= 12 ? Number(hour) - 12 : Number(hour);
+    
+    const timeEmojis = {
+      "00": ["🕛", "🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚"],
+      "30": ["🕧", "🕜", "🕝", "🕞", "🕟", "🕠", "🕡", "🕢", "🕣", "🕤", "🕥", "🕦"]
+    };
+
+    return timeEmojis[minute][hour]
   }
 };

@@ -98,6 +98,22 @@ export default class Timetable extends Mixins(UtilsMixin, VueOfflineMixin) {
     return Object.keys(this.timetable).length > 0;
   }
 
+  get todayTab() {
+    let currentDateTab = {
+      index: 0,
+      name: "Monday"
+    };
+
+    for (const [index, tab] of this.tabs.entries()) {
+      if (tab.name.startsWith(new Date().toDateString().split(" ")[0])) {
+        currentDateTab.name = tab.name;
+        currentDateTab.index = index;
+      }
+    }
+
+    return currentDateTab;
+  }
+
   get isFriendsTimetable() {
     return this.$route.name === "friends-timetable";
   }
@@ -130,11 +146,7 @@ export default class Timetable extends Mixins(UtilsMixin, VueOfflineMixin) {
   public mounted() {
     this.assignTimetableContent();
 
-    const currentDateTab = this.tabs.findIndex(tab =>
-      tab.name.startsWith(new Date().toDateString().split(" ")[0])
-    );
-
-    this.activeTab = currentDateTab === -1 ? 0 : currentDateTab;
+    this.activeTab = this.todayTab.index;
   }
 
   async updateTimetable() {
