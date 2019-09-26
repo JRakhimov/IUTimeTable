@@ -14,7 +14,7 @@ export const student = (req, res, next) => {
   if (TOKEN) {
     const decoded = jwt.decode(TOKEN);
 
-    if (decoded.username) {
+    if (decoded && decoded.username) {
       const verified = jwt.verify(TOKEN, process.env.ADMIN_SALT);
 
       if (verified) {
@@ -22,7 +22,7 @@ export const student = (req, res, next) => {
       }
     }
 
-    if (decoded.studentID) {
+    if (decoded && decoded.studentID) {
       const verified = jwt.verify(TOKEN, process.env.STUDENT_SALT);
 
       if (verified) {

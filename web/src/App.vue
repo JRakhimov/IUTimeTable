@@ -1,18 +1,43 @@
 <template>
   <div id="app">
-    <transition name="fade" mode="out-in">
-      <component :is="layout"></component>
-    </transition>
+    <v-app>
+      <v-dialog v-model="updateDialogState" persistent max-width="300">
+        <v-card>
+          <v-card-title class="headline">Update found</v-card-title>
+          <v-card-text>New version of the application was found, please update it to have the latest changes.</v-card-text>
+          <v-card-actions>
+            <div class="flex-grow-1"></div>
+            <v-btn :color="color" text dark @click="updateServiceWorker()">Update</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <transition name="fade" mode="out-in">
+        <component :is="layout"></component>
+      </transition>
+    </v-app>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
+
+import { ProfileModule, GeneralModule } from "./store";
+import UtilsMixin from "./mixins/utils";
 
 @Component
-export default class App extends Vue {
+export default class App extends Mixins(UtilsMixin) {
   get layout() {
     return `${this.$route.meta.layout || "default"}-layout`;
+  }
+
+  get updateDialogState() {
+    return GeneralModule.getShowUpdateDialogState;
+  }
+
+  updateServiceWorker() {
+    ProfileModule.clearTimetable();
+    window.location.reload(true);
   }
 }
 </script>
