@@ -144,6 +144,10 @@ export default class Timetable extends Mixins(UtilsMixin, VueOfflineMixin) {
   }
 
   public mounted() {
+    if (!this.isLoaded) {
+      ProfileModule.fetchTimetable(ProfileModule.getProfile.groupName);
+    }
+
     this.assignTimetableContent();
 
     this.activeTab = this.todayTab.index;

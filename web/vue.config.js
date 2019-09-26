@@ -1,4 +1,9 @@
 module.exports = {
   publicPath: "./",
-  assetsDir: "assets"
+  assetsDir: "assets",
+  pwa: {
+    workboxOptions: {
+      skipWaiting: true
+    }
+  }
 };

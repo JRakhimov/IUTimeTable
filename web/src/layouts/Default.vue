@@ -1,5 +1,16 @@
 <template>
   <v-app>
+    <v-dialog v-model="updateDialogState" persistent max-width="300">
+      <v-card>
+        <v-card-title class="headline">Update found</v-card-title>
+        <v-card-text>New version of the application was found, please update it to have the latest changes.</v-card-text>
+        <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn :color="color" text dark @click="updateServiceWorker()">Update</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-container class="pb-5" fluid>
       <v-layout>
         <v-toolbar :color="color" dark>
@@ -60,6 +71,7 @@
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 
+import { GeneralModule, ProfileModule } from "../store";
 import VueOfflineMixin from "../mixins/vueOffline";
 import UtilsMixin from "../mixins/utils";
 
@@ -72,6 +84,15 @@ export default class DefaultLayout extends Mixins(UtilsMixin, VueOfflineMixin) {
     return this.$route.name === "friends-timetable"
       ? "friends"
       : this.$route.name;
+  }
+
+  get updateDialogState() {
+    return GeneralModule.getShowUpdateDialogState;
+  }
+
+  updateServiceWorker() {
+    ProfileModule.clearTimetable();
+    window.location.reload(true);
   }
 
   changeRoute(to: string) {
@@ -103,6 +124,11 @@ export default class DefaultLayout extends Mixins(UtilsMixin, VueOfflineMixin) {
   color: rgba(0, 0, 0, 0.54);
   margin-bottom: 0;
   font-weight: 500;
+}
+
+.v-tabs-bar.v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-tabs-bar--show-arrows):not(.v-slide-group--has-affixes)
+  .v-slide-group__prev {
+  display: none;
 }
 
 .container.container--fluid {

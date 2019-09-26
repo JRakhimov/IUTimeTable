@@ -6,6 +6,7 @@ import { getModule } from "vuex-module-decorators";
 import Groupmates from "./store/groupmates";
 import Friends from "./store/friends";
 import Profile from "./store/profile";
+import General from "./store/general";
 
 Vue.use(Vuex);
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
   modules: {
     groupmates: Groupmates,
     friends: Friends,
-    profile: Profile
+    profile: Profile,
+    general: General
   },
   plugins: [vuexLocal.plugin]
 });
@@ -24,3 +26,4 @@ export default store;
 export const GroupmatesModule = getModule(Groupmates, store);
 export const FriendsModule = getModule(Friends, store);
 export const ProfileModule = getModule(Profile, store);
+export const GeneralModule = getModule(General, store);
