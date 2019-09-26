@@ -24,5 +24,9 @@ new Vue({
   store,
   router,
   render: h => h(App),
-  vuetify: new Vuetify({})
+  vuetify: new Vuetify({
+    theme: {
+      dark: false
+    }
+  })
 }).$mount("#app");

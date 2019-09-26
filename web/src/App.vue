@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <v-app>
+    <v-app :dark="turnDarkMode">
       <v-dialog v-model="updateDialogState" persistent max-width="300">
         <v-card>
-          <v-card-title class="headline">Update found</v-card-title>
+          <v-card-title class="headline">Update is here!</v-card-title>
           <v-card-text>New version of the application was found, please update it to have the latest changes.</v-card-text>
           <v-card-actions>
             <div class="flex-grow-1"></div>
@@ -33,6 +33,10 @@ export default class App extends Mixins(UtilsMixin) {
 
   get updateDialogState() {
     return GeneralModule.getShowUpdateDialogState;
+  }
+
+  get turnDarkMode() {
+    return GeneralModule.getAppTheme === "Dark";
   }
 
   updateServiceWorker() {

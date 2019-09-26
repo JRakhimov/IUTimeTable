@@ -9,7 +9,8 @@ export const developersHandler = async (ctx) => {
   messageText = messageText.val();
 
   if (!messageText) {
-    messageText = "<b>Android Developer:</b>\n";
+    messageText = "<b>Channel of the project:</b> @iutimetable\n\n";
+    messageText += "<b>Android Developer:</b>\n";
     messageText += "Kholmatov Siyavushkhon\n";
     messageText += "Group: ICE-17-1\n";
     messageText += "@KholmatovS\n";
@@ -23,7 +24,8 @@ export const developersHandler = async (ctx) => {
     messageText += "Rakhimov Javokhir\n";
     messageText += "Group: CIE-18-14\n";
     messageText += "@Rakhimov_J\n";
-    messageText += "j.rakhimov@student.inha.uz";
+    messageText += "j.rakhimov@student.inha.uz\n\n";
+    messageText += '<b>Try out the</b> <a href="https://iutimetable.netlify.com">web version</a> <b>of our application</b>';
   }
 
   ctx.replyWithHTML(messageText);

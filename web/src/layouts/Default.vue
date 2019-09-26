@@ -77,6 +77,16 @@ export default class DefaultLayout extends Mixins(UtilsMixin, VueOfflineMixin) {
     this.$router.replace({ name: to });
   }
 
+  inverseAppTheme() {
+    GeneralModule.inverseAppTheme();
+
+    if (GeneralModule.getAppTheme === "Light") {
+      this.$vuetify.theme.dark = false;
+    } else {
+      this.$vuetify.theme.dark = true;
+    }
+  }
+
   mounted() {
     this.$on("offline", () => {
       this.snackbarText = "You are offline ☹️";

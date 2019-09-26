@@ -57,7 +57,8 @@ export const methods = {
     const markup = Markup.inlineKeyboard([
       [ Markup.callbackButton("Monday ☹️", "day:1"), Markup.callbackButton("Tuesday 🙁", "day:2") ],
       [ Markup.callbackButton("Wednesday 😌", "day:3"), Markup.callbackButton("Thursday 🙂", "day:4") ],
-      [ Markup.callbackButton("Friday 😃", "day:5") ]
+      [ Markup.callbackButton("Friday 😃", "day:5") ],
+      [ Markup.urlButton("Web App 🖥📲", "https://iutimetable.netlify.com") ]
     ]);
 
     return ctx.reply(messageText, Extra.HTML().markup(markup));
@@ -67,7 +68,8 @@ export const methods = {
     const markup = Markup.inlineKeyboard([
       [ Markup.callbackButton("Monday ☹️", "day:1"), Markup.callbackButton("Tuesday 🙁", "day:2") ],
       [ Markup.callbackButton("Wednesday 😌", "day:3"), Markup.callbackButton("Thursday 🙂", "day:4") ],
-      [ Markup.callbackButton("Friday 😃", "day:5") ]
+      [ Markup.callbackButton("Friday 😃", "day:5") ],
+      [ Markup.urlButton("Web App 🖥📲", "https://iutimetable.netlify.com") ]
     ]);
 
     return ctx.editMessageText(messageText, Extra.HTML().markup(markup)).catch();

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "edupage-parser": "^1.0.0",
+    "edupage-parser": "^1.2.0",
     "vue": "^2.6.10",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
