@@ -12,6 +12,8 @@ if (process.env.NODE_ENV === "production") {
       console.log("App is being served from cache by a service worker.\n");
     },
     registered() {
+      GeneralModule.setUpdateDialogState(false);
+
       console.log("Service worker has been registered.");
     },
     cached() {
