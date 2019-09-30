@@ -70,7 +70,7 @@ export default class Groupmates extends Mixins(UtilsMixin, VueOfflineMixin) {
   get groupmatesList() {
     const tmpGroupmates: Array<
       GroupmatesHeader | ExtendedStudent | GroupmatesDivider
-    > = [{ header: ProfileModule.getProfile.groupName }];
+    > = [{ header: `${ProfileModule.getProfile.groupName} • ${this.groupmates.length}` }];
 
     this.groupmates.forEach((groupmate: ExtendedStudent, index: number) => {
       tmpGroupmates.push(groupmate);
