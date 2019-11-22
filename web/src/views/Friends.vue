@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mb-8">
     <v-dialog v-model="dialogOpened" max-width="600px">
       <v-card>
         <v-form ref="form" v-model="isInputValid">
@@ -95,7 +95,7 @@
         @click="openDialog"
         :style="colorStyles()"
         v-show="!dialogOpened && isOnline && !isLoading"
-        class="add-friend"
+        class="j-fab"
         dark
         fab
       >
@@ -206,11 +206,3 @@ export default class Friends extends Mixins(UtilsMixin, VueOfflineMixin) {
   }
 }
 </script>
-
-<style lang="scss">
-.add-friend {
-  position: absolute !important;
-  bottom: 5.5rem;
-  right: 1.5rem;
-}
-</style>
