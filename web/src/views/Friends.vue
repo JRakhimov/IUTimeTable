@@ -50,11 +50,13 @@
 
       <v-flex v-if="!isLoading" md6>
         <v-card>
+          <v-progress-linear :indeterminate="true" :active="isDeleting" :color="color" height="5"/>
+
           <v-list class="pr-3" two-line>
             <template v-for="(friend, index) in friendsList">
               <v-subheader v-if="friend.header" :key="friend.header">{{ friend.header }}</v-subheader>
 
-              <v-divider v-else-if="friend.divider" :key="index" :inset="friend.inset"></v-divider>
+              <v-divider v-else-if="friend.divider" :key="index" :inset="friend.inset"/>
 
               <v-list-item
                 v-else
@@ -83,8 +85,6 @@
               </v-list-item>
             </template>
           </v-list>
-
-          <v-progress-linear :indeterminate="true" :active="isDeleting" :color="color" height="5"></v-progress-linear>
         </v-card>
       </v-flex>
     </v-layout>
@@ -107,12 +107,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
-import { getModule } from "vuex-module-decorators";
 
 import FriendsSkeleton from "../components/skeletons/FriendsSkeleton.vue";
 
 import { FriendsModule, ProfileModule } from "../store";
-import { Student, ExtendedStudent } from "../types";
+import { ExtendedStudent } from "../types";
 import VueOfflineMixin from "../mixins/vueOffline";
 import UtilsMixin from "../mixins/utils";
 
@@ -161,15 +160,14 @@ export default class Friends extends Mixins(UtilsMixin, VueOfflineMixin) {
   }
 
   async mounted() {
-    const { studentID } = ProfileModule.getProfile;
-    let friends = FriendsModule.getFriends;
+    if (!this.isOffline) {
+      this.isDeleting = true;
 
-    if (studentID && !friends.length) {
-      this.isLoading = true;
+      const { studentID } = ProfileModule.getProfile;
 
       await FriendsModule.fetchFriends(studentID);
 
-      this.isLoading = false;
+      this.isDeleting = false;
     }
   }
 

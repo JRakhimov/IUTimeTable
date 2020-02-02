@@ -3,7 +3,7 @@
     <v-layout>
       <v-toolbar :color="color" dark>
         <v-toolbar-title class="unselectable">IUTimeTable</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer/>
         <v-btn icon color="white">
           <v-icon>help</v-icon>
         </v-btn>
@@ -58,7 +58,7 @@
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 
-import { GeneralModule, ProfileModule } from "../store";
+import { FriendsModule, GeneralModule, GroupmatesModule, ProfileModule } from "../store";
 import VueOfflineMixin from "../mixins/vueOffline";
 import UtilsMixin from "../mixins/utils";
 
@@ -80,14 +80,10 @@ export default class DefaultLayout extends Mixins(UtilsMixin, VueOfflineMixin) {
   inverseAppTheme() {
     GeneralModule.inverseAppTheme();
 
-    if (GeneralModule.getAppTheme === "Light") {
-      this.$vuetify.theme.dark = false;
-    } else {
-      this.$vuetify.theme.dark = true;
-    }
+    this.$vuetify.theme.dark = GeneralModule.getAppTheme !== "Light";
   }
 
-  mounted() {
+  async mounted() {
     this.$on("offline", () => {
       this.snackbarText = "You are offline ☹️";
       this.snackbar = true;
@@ -101,6 +97,23 @@ export default class DefaultLayout extends Mixins(UtilsMixin, VueOfflineMixin) {
     if (this.isOffline) {
       this.snackbarText = "You are offline ☹️";
       this.snackbar = true;
+    } else {
+      const profile = await ProfileModule.fetchProfile();
+      
+      if (profile.forceLogout) {
+        await ProfileModule.forceLogout(profile.studentID);
+
+        localStorage.removeItem("jwt");
+        this.$router.replace({ name: "login" });
+
+        await ProfileModule.clearProfile();
+        await FriendsModule.clearFriends();
+        await GroupmatesModule.clearGroupmates();
+
+        return;
+      }
+
+      ProfileModule.setProfile(profile);
     }
   }
 }

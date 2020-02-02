@@ -23,7 +23,8 @@ const emptyProfile: ExtendedStudent = {
   studentID: "",
   timetable: {},
   stage: Stage.Freshman,
-  color: ""
+  color: "",
+  forceLogout: false
 };
 
 @Module({ name: "Profile", store })
@@ -59,7 +60,11 @@ export default class Profile extends VuexModule {
   }
 
   @Action({ commit: "setProfile" })
-  async fetchProfile(studentID: string): Promise<Student> {
+  async fetchProfile(studentID?: string): Promise<ExtendedStudent | Student> {
+    if (studentID == null) {
+      studentID = this.context.getters.getProfile.studentID;
+    }
+
     const HOST_URL = process.env.VUE_APP_HOST_URL;
     const URL = `${HOST_URL}/students/${studentID}`;
     const jwt = localStorage.getItem("jwt");
@@ -71,6 +76,15 @@ export default class Profile extends VuexModule {
     }
 
     return emptyProfile;
+  }
+
+  @Action
+  async forceLogout(studentID: string): Promise<void> {
+    const HOST_URL = process.env.VUE_APP_HOST_URL;
+    const URL = `${HOST_URL}/students/logout`;
+    const jwt = localStorage.getItem("jwt");
+
+    await axios.put(URL, { studentID, condition: false }, { headers: { "X-Auth": jwt } })
   }
 
   @Action({ commit: "setTimetable" })

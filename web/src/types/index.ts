@@ -26,6 +26,7 @@ export type Student = {
   groupName: string;
   studentID: string;
   timetable: TimeTable | {};
+  forceLogout: false;
 };
 
 export enum Stage {
@@ -44,6 +45,7 @@ export type ExtendedStudent = {
   groupName: string;
   studentID: string;
   timetable: TimeTable | {};
+  forceLogout: false;
 
   stage: Stage;
   color: string;

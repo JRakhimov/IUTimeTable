@@ -1,4 +1,5 @@
 import { firebase, Logger } from "../../utils";
+import * as admin from "firebase-admin";
 
 /**
  * @param {Request} req - Request class from express
@@ -66,6 +67,55 @@ export const add = async (req, res) => {
     res
       .status(200)
       .json({ status: false, message: `Wrong json:\n${JSON.stringify(req.body, undefined, 2)}` });
+
+    logger.warn(`Wrong json:\n${JSON.stringify(req.body, undefined, 2)}`);
+  }
+};
+
+/**
+ * @param {Request} req - Request class from express
+ * @param {Response} res - Response class from express
+ */
+export const setLogoutFalse = async (req, res) => {
+  const { studentID, all, condition } = req.body;
+  
+  const logger = Logger("ForceLogoutFalse");
+
+  if (studentID && condition != null) {
+    // eslint-disable-next-line eqeqeq
+    const isSOL = studentID[4] == 1;
+
+    await firebase
+      .database()
+      .ref(`students/${isSOL ? "SOL" : "SOCIE"}/${studentID}`)
+      .update({ forceLogout: condition });
+
+    res.status(200).json({ status: true, message: `Force logout condition for student ${studentID} successfully edited.` });
+    logger.info(`Force logout condition for student ${studentID} successfully edited.`);
+  } else if (all && condition != null) {
+    const students = await firebase.database().ref("students").once("value").then(x => x.val());
+
+    for (const key in students.SOL) {
+      if (students.SOL.hasOwnProperty(key)) {
+        students.SOL[key].forceLogout = condition;
+      }
+    }
+
+    for (const key in students.SOCIE) {
+      if (students.SOCIE.hasOwnProperty(key)) {
+        students.SOCIE[key].forceLogout = condition;
+      }
+    }
+    
+    await firebase
+      .database()
+      .ref("students")
+      .update(students);
+
+    res.status(200).json({ status: true, message: "Force logout condition for all students successfully edited." });
+    logger.info("Force logout condition for all students successfully edited.");
+  } else {
+    res.status(200).json({ status: false, message: `Wrong json:\n${JSON.stringify(req.body, undefined, 2)}` });
 
     logger.warn(`Wrong json:\n${JSON.stringify(req.body, undefined, 2)}`);
   }

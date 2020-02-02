@@ -123,6 +123,7 @@ export default class UtilsMixin extends Vue {
     const fullNameLetter = firstname[0] + lastname[0];
 
     return {
+      forceLogout: studentData.forceLogout,
       timetable: this.sortLessons(timetable),
       fullName: this.formatName(fullName),
       stage: this.getStage(studentID),
@@ -130,7 +131,7 @@ export default class UtilsMixin extends Vue {
       oneNameLetter: fullName[0],
       fullNameLetter,
       groupName,
-      studentID
+      studentID,
     };
   }
 }
